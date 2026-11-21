@@ -1,0 +1,2257 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>드래곤 퀘스트 10 콘텐츠 진행도 트래커</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans KR', sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+        }
+        .progress-transition {
+            transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        body:not(.edit-mode) .edit-only {
+            display: none !important;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- 상단 내비게이션 헤더 -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-xs">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+                <div class="flex items-center gap-2.5 cursor-pointer group min-w-0" onclick="goHome()">
+                    <div class="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-extrabold text-lg shadow-xs group-hover:bg-indigo-700 transition shrink-0">
+                        ✓
+                    </div>
+                    <div class="min-w-0">
+                        <h1 class="text-sm sm:text-lg font-extrabold tracking-tight text-slate-900 leading-tight truncate">
+                            드래곤 퀘스트 10 콘텐츠 진행도 트래커
+                        </h1>
+                        <p class="text-[11px] text-slate-500 hidden sm:block">Collection &amp; Achievement Checklist</p>
+                    </div>
+                </div>
+                <a href="https://chisadqx.github.io/dqx-navi/" target="_blank" rel="noopener noreferrer"
+                   class="px-2.5 sm:px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-xl text-xs font-bold transition flex items-center gap-1 shrink-0"
+                   title="일과·주과 내비 페이지로 이동">
+                    <span>🧭</span>
+                    <span>일과·주과 내비</span>
+                </a>
+            </div>
+
+            <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                <span id="edit-mode-badge" class="edit-only items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
+                    ✏️ 편집 모드 활성
+                </span>
+                <button id="header-add-item-btn" onclick="openItemModal()" class="edit-only px-2.5 sm:px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs sm:text-sm font-semibold transition items-center gap-1">
+                    <span>+ 항목 추가</span>
+                </button>
+                <button id="header-manage-btn" onclick="openManageModal()" class="edit-only px-2.5 sm:px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs sm:text-sm font-semibold transition">
+                    관리
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 메인 컨텐츠 영역 -->
+    <main class="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8">
+
+        <!-- [뷰 1] 전체 진행도 허브 (메인 화면) -->
+        <section id="view-hub" class="space-y-6">
+            <div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-xs">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                    <div>
+                        <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-50 text-indigo-700 mb-1.5">
+                            전체 종합 달성률
+                        </span>
+                        <h2 id="overall-title" class="text-xl sm:text-2xl font-extrabold text-slate-900">
+                            내 드래곤 퀘스트 10 진행 현황
+                        </h2>
+                        <p id="overall-subtitle" class="text-xs sm:text-sm text-slate-500 mt-0.5">
+                            카테고리를 클릭하여 세부 항목을 확인하고 달성 여부를 체크하세요.
+                        </p>
+                    </div>
+                    <div class="edit-only flex items-center gap-2 self-start sm:self-center">
+                        <button onclick="openCategoryModal()" class="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs sm:text-sm font-semibold transition shadow-xs">
+                            + 카테고리 추가
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 전체 진행률 바 -->
+                <div class="bg-slate-50 rounded-xl p-4 border border-slate-100">
+                    <div class="flex items-end justify-between mb-2">
+                        <div>
+                            <span id="overall-percentage" class="text-2xl sm:text-3xl font-extrabold text-indigo-600">0%</span>
+                            <span id="overall-count-text" class="text-xs sm:text-sm font-medium text-slate-500 ml-2">0 / 0 완료</span>
+                        </div>
+                        <span id="overall-remaining-text" class="text-xs font-semibold text-slate-400">남은 항목 0개</span>
+                    </div>
+                    <div class="w-full h-3 bg-slate-200 rounded-full overflow-hidden">
+                        <div id="overall-progress-bar" class="h-full bg-indigo-600 rounded-full progress-transition" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 카테고리 카드 그리드 -->
+            <div>
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="text-base font-bold text-slate-800">콘텐츠 카테고리</h3>
+                    <span id="category-count-badge" class="text-xs font-semibold text-slate-500">총 0개 카테고리</span>
+                </div>
+                <div id="category-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- JS로 카테고리 카드 렌더링 -->
+                </div>
+            </div>
+        </section>
+
+        <!-- [뷰 2] 카테고리 세부 체크리스트 화면 -->
+        <section id="view-detail" class="hidden space-y-5">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+                <button onclick="goHome()" class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-xl text-xs sm:text-sm font-semibold transition shadow-2xs">
+                    <span>←</span>
+                    <span>전체 목록으로 돌아가기</span>
+                </button>
+                <div class="flex items-center gap-2">
+                    <a id="detail-guide-link" href="#" target="_blank" rel="noopener noreferrer" class="hidden inline-flex items-center gap-1.5 px-3.5 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded-xl text-xs sm:text-sm font-semibold transition">
+                        <span>🔗</span>
+                        <span>공략 페이지 열기</span>
+                    </a>
+                    <button id="detail-edit-cat-btn" class="edit-only px-3 py-2 bg-white hover:bg-slate-100 text-slate-600 border border-slate-200 rounded-xl text-xs font-semibold transition">
+                        카테고리 수정
+                    </button>
+                </div>
+            </div>
+
+            <!-- 카테고리 헤더 카드 -->
+            <div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-xs">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div class="flex items-start gap-3.5">
+                        <div id="detail-cat-icon" class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-2xl shrink-0">
+                            📦
+                        </div>
+                        <div>
+                            <h2 id="detail-cat-title" class="text-xl sm:text-2xl font-extrabold text-slate-900">카테고리명</h2>
+                            <p id="detail-cat-desc" class="text-xs sm:text-sm text-slate-500 mt-1">카테고리 설명</p>
+                        </div>
+                    </div>
+                    <div class="sm:text-right shrink-0">
+                        <div id="detail-cat-percent" class="text-2xl font-extrabold text-indigo-600">0%</div>
+                        <div id="detail-cat-count" class="text-xs font-semibold text-slate-500">0 / 0 완료</div>
+                    </div>
+                </div>
+                <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden mt-4">
+                    <div id="detail-cat-bar" class="h-full bg-indigo-600 rounded-full progress-transition" style="width: 0%"></div>
+                </div>
+
+                <!-- 특수 카테고리 요약 배너 -->
+                <div id="detail-special-banner" class="hidden mt-4"></div>
+            </div>
+
+            <!-- 검색 및 필터 컨트롤 -->
+            <div id="detail-filter-bar" class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+                <div class="relative flex-1">
+                    <input type="text" id="detail-search-input" oninput="renderDetailView()" placeholder="항목 이름, 지역, 메모, 효과 검색..." class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition">
+                    <span class="absolute left-3 top-2.5 text-slate-400 text-sm">🔍</span>
+                </div>
+                <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+                    <label class="inline-flex items-center gap-2 cursor-pointer select-none bg-slate-50 hover:bg-slate-100 px-3 py-2 rounded-xl border border-slate-200 transition">
+                        <input type="checkbox" id="filter-missing-only" onchange="renderDetailView()" class="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500">
+                        <span class="text-xs sm:text-sm font-semibold text-slate-700">빠뜨린 항목만 보기</span>
+                    </label>
+                    <button onclick="openItemModal(currentCategoryId)" class="edit-only px-3 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-xl text-xs sm:text-sm font-bold transition">
+                        + 이 카테고리에 항목 추가
+                    </button>
+                </div>
+            </div>
+
+            <!-- 세부 항목 리스트 컨테이너 -->
+            <div id="detail-items-container" class="space-y-4">
+                <!-- JS로 항목 렌더링 -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 토스트 알림 -->
+    <div id="toast-box" class="fixed bottom-5 right-5 z-50 pointer-events-none opacity-0 transition-opacity duration-300">
+        <div id="toast-message" class="bg-slate-900 text-white px-4 py-3 rounded-xl shadow-lg text-xs sm:text-sm font-semibold">
+            알림 메시지
+        </div>
+    </div>
+
+    <!-- 모달 1: 카테고리 추가 / 수정 -->
+    <div id="category-modal" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl border border-slate-200 space-y-4">
+            <div class="flex items-center justify-between">
+                <h3 id="cat-modal-title" class="text-lg font-extrabold text-slate-900">새 카테고리 추가</h3>
+                <button onclick="closeCategoryModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold px-2">×</button>
+            </div>
+            <form id="category-form" onsubmit="saveCategoryForm(event)" class="space-y-3.5">
+                <input type="hidden" id="edit-cat-id">
+                <div class="grid grid-cols-4 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">아이콘</label>
+                        <input type="text" id="edit-cat-icon" value="📌" maxlength="4" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-center text-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                    <div class="col-span-3">
+                        <label class="block text-xs font-bold text-slate-700 mb-1">카테고리 이름 *</label>
+                        <input type="text" id="edit-cat-name" required placeholder="예: 황금 비늘, 미니 메달" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">설명</label>
+                    <input type="text" id="edit-cat-desc" placeholder="예: 필드 전역에서 획득할 수 있는 수집 요소" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">공략 URL (선택)</label>
+                    <input type="url" id="edit-cat-guide" placeholder="https://..." class="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div class="flex items-center justify-between pt-2">
+                    <button type="button" id="delete-cat-btn" onclick="deleteCurrentCategory()" class="hidden px-3 py-2 text-xs font-bold text-rose-600 hover:bg-rose-50 rounded-xl transition">
+                        카테고리 삭제
+                    </button>
+                    <div class="flex items-center gap-2 ml-auto">
+                        <button type="button" onclick="closeCategoryModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-sm font-semibold transition">
+                            취소
+                        </button>
+                        <button type="submit" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-bold transition">
+                            저장
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 모달 2: 항목 추가 / 수정 -->
+    <div id="item-modal" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-xl border border-slate-200 space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between">
+                <h3 id="item-modal-title" class="text-lg font-extrabold text-slate-900">새 수집 항목 추가</h3>
+                <button onclick="closeItemModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold px-2">×</button>
+            </div>
+            <form id="item-form" onsubmit="saveItemForm(event)" class="space-y-3.5">
+                <input type="hidden" id="edit-item-id">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">카테고리 *</label>
+                        <select id="edit-item-cat" required onchange="onItemCategorySelectChange()" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">세부 그룹 / 지역</label>
+                        <input type="text" id="edit-item-group" placeholder="예: 불의 보주, Ver.8, 1회 한정" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div class="sm:col-span-2">
+                        <label class="block text-xs font-bold text-slate-700 mb-1">항목 이름 *</label>
+                        <input type="text" id="edit-item-name" required placeholder="예: 화염의 소용돌이, 오크 가드" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">진행 단계 타입</label>
+                        <select id="edit-item-steps" onchange="toggleItemTypeFields()" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="1">1회성 (체크박스)</option>
+                            <option value="2">2단계 (최소/최대)</option>
+                            <option value="3">3단계 (Lv.1~3)</option>
+                            <option value="5">5단계 (Lv.1~5)</option>
+                            <option value="6">6레벨 (달인의 보주)</option>
+                            <option value="10_card">10레벨 (이상한 카드)</option>
+                            <option value="10_buddy">10레벨 (동료 마음 레벨)</option>
+                            <option value="30">30레벨 (여신의 나무)</option>
+                            <option value="accessory">악세서리 전용</option>
+                            <option value="monster_heart">마물의 마음 전용</option>
+                            <option value="seminar">모험 세미나 퀴즈</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">출현 장소 / 좌표 / 획득 방법</label>
+                    <input type="text" id="edit-item-loc" placeholder="예: 거짓된 이름 없는 초원 E-3 주변" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">메모 / 효과 / 보상 팁</label>
+                        <input type="text" id="edit-item-note" placeholder="예: 드랍 보주, 토벌 칭호 등" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">태그 / 원종 / 코인</label>
+                        <input type="text" id="edit-item-tag" placeholder="예: 5,000 코인, 원종: 오크" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                </div>
+
+                <!-- 특수 타입 전용 필드 A: Lv.1 / Lv.Max 효과 (보주, 동료, 사념 최소/최대) -->
+                <div id="special-minmax-fields" class="hidden bg-indigo-50/60 border border-indigo-200 rounded-xl p-3.5 space-y-2.5">
+                    <div class="text-xs font-extrabold text-indigo-800">단계별 효과 / 스테이터스 설정</div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        <div>
+                            <label id="minmax-label-1" class="block text-[11px] font-bold text-slate-700 mb-1">Lv.1 / 최소치 효과</label>
+                            <input type="text" id="edit-item-min-effect" placeholder="예: 공격력 +3 / 데미지 +1%" class="w-full px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-xs">
+                        </div>
+                        <div>
+                            <label id="minmax-label-2" class="block text-[11px] font-bold text-slate-700 mb-1">최대 레벨 / 최대치 효과</label>
+                            <input type="text" id="edit-item-max-effect" placeholder="예: 공격력 +18 / 데미지 +6%" class="w-full px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-xs">
+                        </div>
+                    </div>
+                    <div id="buddy-talk-fields" class="hidden grid grid-cols-2 gap-2.5 pt-1">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-700 mb-1">2인 대화 총 개수</label>
+                            <input type="number" id="edit-buddy-talk2" min="0" max="20" value="5" class="w-full px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-xs">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-700 mb-1">4인 대화 총 개수</label>
+                            <input type="number" id="edit-buddy-talk4" min="0" max="20" value="3" class="w-full px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-xs">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 특수 타입 전용 필드 B: 악세서리 전용 -->
+                <div id="special-accessory-fields" class="hidden bg-amber-50/70 border border-amber-200 rounded-xl p-3.5 space-y-2.5">
+                    <div class="text-xs font-extrabold text-amber-800">악세서리 상세 스펙</div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-700 mb-1">기본 효과</label>
+                            <input type="text" id="edit-acc-base" placeholder="예: 치명타율 +1.0%" class="w-full px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-xs">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-700 mb-1">기초 스테이터스</label>
+                            <input type="text" id="edit-acc-stat" placeholder="예: 공격력 +10, 최대HP +8" class="w-full px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-xs">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-700 mb-1">합성 최대치 (이론치)</label>
+                        <input type="text" id="edit-acc-synth" placeholder="예: 공격력 +5 × 3 (총 +15)" class="w-full px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-xs">
+                    </div>
+                </div>
+
+                <!-- 특수 타입 전용 필드 C: 마물의 마음 전용 -->
+                <div id="special-heart-fields" class="hidden bg-rose-50/70 border border-rose-200 rounded-xl p-3.5 space-y-2.5">
+                    <div class="text-xs font-extrabold text-rose-800">마물의 마음 교환 재료 &amp; 효과</div>
+                    <div class="grid grid-cols-3 gap-2">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-700 mb-1">몬스터 하트 수</label>
+                            <input type="number" id="edit-heart-count" min="0" value="1" class="w-full px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-xs">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-700 mb-1">필요 결정 종류</label>
+                            <input type="text" id="edit-crystal-name" value="마물의 마음의 결정 1" placeholder="예: 결정 1, 결정 3" class="w-full px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-xs">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-700 mb-1">필요 결정 수</label>
+                            <input type="number" id="edit-crystal-count" min="0" value="6" class="w-full px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-xs">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-700 mb-1">마물의 마음 소환/장비 효과</label>
+                        <input type="text" id="edit-heart-effect" placeholder="예: 뇌속성 데미지 +3%, 소환 시 범위 번개 공격" class="w-full px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-xs">
+                    </div>
+                </div>
+
+                <!-- 특수 타입 전용 필드 D: 10레벨 / 30레벨 상세 스탯 -->
+                <div id="tree-levels-editor" class="hidden bg-slate-50 border border-slate-200 rounded-xl p-3 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span id="tree-levels-title" class="text-xs font-extrabold text-slate-700">레벨별 증가 스탯 / 효과</span>
+                        <span class="text-[11px] text-slate-400">각 레벨 도달 시 효과</span>
+                    </div>
+                    <div id="tree-levels-inputs" class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-48 overflow-y-auto pr-1">
+                    </div>
+                </div>
+
+                <!-- 특수 타입 전용 필드 E: 모험 세미나 퀴즈 -->
+                <div id="seminar-quiz-editor" class="hidden bg-sky-50/70 border border-sky-200 rounded-xl p-3.5 space-y-2">
+                    <div class="text-xs font-extrabold text-sky-800">모험 세미나 퀴즈 문제 &amp; 정답 (최대 5문항)</div>
+                    <div id="seminar-quiz-inputs" class="space-y-2 max-h-48 overflow-y-auto pr-1">
+                    </div>
+                </div>
+
+                <!-- 참고 사진 / 스크린샷 첨부 -->
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <label class="text-xs font-bold text-slate-700">📷 참고 사진 / 위치 스크린샷 (선택)</label>
+                        <button type="button" id="clear-item-image-btn" onclick="clearItemImage()" class="hidden text-[11px] font-bold text-rose-600 hover:underline">
+                            사진 삭제
+                        </button>
+                    </div>
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <label class="px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 rounded-lg text-xs font-semibold cursor-pointer text-center shrink-0 transition">
+                            파일 선택
+                            <input type="file" id="edit-item-image-file" accept="image/*" onchange="handleItemImageUpload(event)" class="hidden">
+                        </label>
+                        <input type="url" id="edit-item-image-url" oninput="handleItemImageUrlInput(event)" placeholder="또는 이미지 URL 붙여넣기 (https://...)" class="flex-1 px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                    <div id="item-image-preview-wrap" class="hidden pt-1">
+                        <img id="item-image-preview" src="" alt="미리보기" class="max-h-36 rounded-lg border border-slate-200 object-contain bg-white">
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between pt-2">
+                    <button type="button" id="delete-item-btn" onclick="deleteCurrentItem()" class="hidden px-3 py-2 text-xs font-bold text-rose-600 hover:bg-rose-50 rounded-xl transition">
+                        항목 삭제
+                    </button>
+                    <div class="flex items-center gap-2 ml-auto">
+                        <button type="button" onclick="closeItemModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-sm font-semibold transition">
+                            취소
+                        </button>
+                        <button type="submit" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-bold transition">
+                            저장
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 모달 3: 데이터 관리 / 백업 / 초기화 -->
+    <div id="manage-modal" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl border border-slate-200 space-y-4">
+            <div class="flex items-center justify-between">
+                <h3 class="text-lg font-extrabold text-slate-900">데이터 및 백업 관리</h3>
+                <button onclick="closeManageModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold px-2">×</button>
+            </div>
+            <p class="text-xs text-slate-500 leading-relaxed">
+                체크한 진행도는 현재 브라우저에 자동 저장됩니다. 기기 변경이나 백업을 위해 JSON 파일로 내보내거나 불러올 수 있습니다.
+            </p>
+            <div class="space-y-2.5">
+                <button onclick="exportDataJson()" class="w-full py-2.5 px-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-bold transition">
+                    📥 JSON 파일로 백업 내보내기
+                </button>
+                <label class="block w-full py-2.5 px-4 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl text-sm font-bold text-center cursor-pointer transition">
+                    📤 JSON 백업 파일 불러오기
+                    <input type="file" accept=".json" onchange="importDataJson(event)" class="hidden">
+                </label>
+            </div>
+            <div class="pt-3 border-t border-slate-100 space-y-2">
+                <button onclick="resetProgressOnly()" class="w-full py-2 px-4 bg-amber-50 hover:bg-amber-100 text-amber-800 rounded-xl text-xs font-bold transition text-left">
+                    🔄 체크된 진행도만 모두 초기화
+                </button>
+                <button onclick="resetCatalogToDefault()" class="w-full py-2 px-4 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-xl text-xs font-bold transition text-left">
+                    ⚠️ 카테고리 및 항목 목록을 초기 기본값으로 복원
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 모달 4: 이미지 원본 확대 라이트박스 -->
+    <div id="image-lightbox-modal" onclick="closeImageLightbox()" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+        <div onclick="event.stopPropagation()" class="relative max-w-4xl w-full bg-white rounded-2xl p-3 sm:p-4 shadow-2xl border border-slate-200 space-y-2">
+            <div class="flex items-center justify-between px-1">
+                <h4 id="lightbox-title" class="text-sm font-extrabold text-slate-800 truncate">참고 이미지</h4>
+                <button onclick="closeImageLightbox()" class="text-slate-400 hover:text-slate-700 text-xl font-bold px-2">×</button>
+            </div>
+            <div class="bg-slate-950 rounded-xl overflow-hidden flex items-center justify-center max-h-[75vh]">
+                <img id="lightbox-image" src="" alt="확대 이미지" class="max-h-[75vh] w-auto object-contain">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // =========================================================================
+        // 1. 기본 카탈로그 데이터 (DEFAULT_CATALOG)
+        // =========================================================================
+        const STORAGE_CATALOG_KEY = 'dq10_tracker_catalog_v1';
+        const STORAGE_PROGRESS_KEY = 'dq10_tracker_progress_v1';
+
+        const DEFAULT_CATALOG = [
+            {
+                id: 'goddess_tree',
+                name: '여신의 나무 (원세고 파니갈룸)',
+                icon: '🌳',
+                description: '여신의 나무 8종류의 육성 레벨(Lv.1~30) 및 스테이터스 상승량 관리',
+                guideUrl: 'https://dragon-quest.jp/ten/battle/panigalm.php',
+                items: [
+                    { id: 'tree_hp', group: '여신의 나무 (Lv.1~30)', name: '생명의 나무 (최대 HP)', steps: 30, isTree: true, location: '원세고 파니갈룸 - 창생의 영맥', tag: '창생의 구슬 필요', levels: Array.from({ length: 30 }, (_, i) => `Lv.${i + 1}: 최대 HP +${i + 1}`) },
+                    { id: 'tree_mp', group: '여신의 나무 (Lv.1~30)', name: '마력의 나무 (최대 MP)', steps: 30, isTree: true, location: '원세고 파니갈룸 - 창생의 영맥', tag: '창생의 구슬 필요', levels: Array.from({ length: 30 }, (_, i) => `Lv.${i + 1}: 최대 MP +${i + 1}`) },
+                    { id: 'tree_atk', group: '여신의 나무 (Lv.1~30)', name: '힘의 나무 (공격력)', steps: 30, isTree: true, location: '원세고 파니갈룸 - 창생의 영맥', tag: '창생의 구슬 필요', levels: Array.from({ length: 30 }, (_, i) => `Lv.${i + 1}: 공격력 +${i + 1}`) },
+                    { id: 'tree_def', group: '여신의 나무 (Lv.1~30)', name: '수비의 나무 (수비력)', steps: 30, isTree: true, location: '원세고 파니갈룸 - 창생의 영맥', tag: '창생의 구슬 필요', levels: Array.from({ length: 30 }, (_, i) => `Lv.${i + 1}: 수비력 +${i + 1}`) },
+                    { id: 'tree_matk', group: '여신의 나무 (Lv.1~30)', name: '지혜의 나무 (공격마력)', steps: 30, isTree: true, location: '원세고 파니갈룸 - 창생의 영맥', tag: '창생의 구슬 필요', levels: Array.from({ length: 30 }, (_, i) => `Lv.${i + 1}: 공격마력 +${i + 1}`) },
+                    { id: 'tree_mdef', group: '여신의 나무 (Lv.1~30)', name: '신앙의 나무 (회복마력)', steps: 30, isTree: true, location: '원세고 파니갈룸 - 창생의 영맥', tag: '창생의 구슬 필요', levels: Array.from({ length: 30 }, (_, i) => `Lv.${i + 1}: 회복마력 +${i + 1}`) },
+                    { id: 'tree_dex', group: '여신의 나무 (Lv.1~30)', name: '재주의 나무 (손재주)', steps: 30, isTree: true, location: '원세고 파니갈룸 - 창생의 영맥', tag: '창생의 구슬 필요', levels: Array.from({ length: 30 }, (_, i) => `Lv.${i + 1}: 손재주 +${i + 1}`) },
+                    { id: 'tree_agi', group: '여신의 나무 (Lv.1~30)', name: '질풍의 나무 (민첩성)', steps: 30, isTree: true, location: '원세고 파니갈룸 - 창생의 영맥', tag: '창생의 구슬 필요', levels: Array.from({ length: 30 }, (_, i) => `Lv.${i + 1}: 민첩성 +${i + 1}`) }
+                ]
+            },
+            {
+                id: 'astraljia',
+                name: '이계 아스탈지아',
+                icon: '🌌',
+                description: '이계의 동료 마음 레벨(Lv.1~10)과 2인/4인 대화 회수 진행도 관리',
+                guideUrl: 'https://dragon-quest.jp/ten/battle/astalgia.php',
+                items: [
+                    { id: 'ast_hector', group: '이계의 동료', name: '휴저', steps: 10, isAstraljiaBuddy: true, minEffect: '공격력 +4', maxEffect: '공격력 +20 / 소환 강화', talk2Total: 5, talk4Total: 3 },
+                    { id: 'ast_estella', group: '이계의 동료', name: '에스테라', steps: 10, isAstraljiaBuddy: true, minEffect: '공격마력 +6', maxEffect: '공격마력 +30 / 소환 강화', talk2Total: 5, talk4Total: 3 },
+                    { id: 'ast_yusreal', group: '이계의 동료', name: '유슈레일', steps: 10, isAstraljiaBuddy: true, minEffect: '공격력 +4 / 민첩성 +6', maxEffect: '공격력 +20 / 민첩성 +30', talk2Total: 5, talk4Total: 3 },
+                    { id: 'ast_valestein', group: '이계의 동료', name: '바레스테인', steps: 10, isAstraljiaBuddy: true, minEffect: '최대 HP +4 / 수비력 +6', maxEffect: '최대 HP +20 / 수비력 +30', talk2Total: 5, talk4Total: 3 },
+                    { id: 'ast_illusha', group: '이계의 동료', name: '이루샤', steps: 10, isAstraljiaBuddy: true, minEffect: '회복마력 +6', maxEffect: '회복마력 +30 / 소환 강화', talk2Total: 5, talk4Total: 3 },
+                    { id: 'ast_asher', group: '이계의 동료', name: '아스발', steps: 10, isAstraljiaBuddy: true, minEffect: '공격마력 +6 / 최대 MP +4', maxEffect: '공격마력 +30 / 최대 MP +20', talk2Total: 5, talk4Total: 3 },
+                    { id: 'ast_radolph', group: '이계의 동료', name: '라다 가트', steps: 10, isAstraljiaBuddy: true, minEffect: '공격력 +4 / 최대 HP +4', maxEffect: '공격력 +20 / 최대 HP +20', talk2Total: 5, talk4Total: 3 },
+                    { id: 'ast_hashas', group: '이계의 동료', name: '하크스', steps: 10, isAstraljiaBuddy: true, minEffect: '손재주 +6 / 민첩성 +6', maxEffect: '손재주 +30 / 민첩성 +30', talk2Total: 5, talk4Total: 3 },
+                    { id: 'ast_gilganon', group: '이계의 동료', name: '길가란 왕자', steps: 10, isAstraljiaBuddy: true, minEffect: '공격력 +4 / 손재주 +6', maxEffect: '공격력 +20 / 손재주 +30', talk2Total: 5, talk4Total: 3 },
+                    { id: 'ast_lithia', group: '이계의 동료', name: '리시아', steps: 10, isAstraljiaBuddy: true, minEffect: '회복마력 +6 / 최대 MP +4', maxEffect: '회복마력 +30 / 최대 MP +20', talk2Total: 5, talk4Total: 3 }
+                ]
+            },
+            {
+                id: 'master_orb',
+                name: '달인의 오브 · 보주',
+                icon: '🔮',
+                description: '달인의 보주(Lv.1~6) 수집 및 강화 현황 관리',
+                guideUrl: 'https://dragon-quest.jp/ten/system/houju.php',
+                items: [
+                    { id: 'orb_fire_hp', group: '불의 보주', name: '불굴의 투지', steps: 6, isMasterOrb: true, location: '트로르, 킹 슬라임 등', minEffect: '최대 HP +2', maxEffect: '최대 HP +12' },
+                    { id: 'orb_fire_atk', group: '불의 보주', name: '무신의 호완', steps: 6, isMasterOrb: true, location: '키라머신, 바토루렉스 등', minEffect: '공격력 +1', maxEffect: '공격력 +6' },
+                    { id: 'orb_water_heal', group: '물의 보주', name: '베호마러의 기적', steps: 6, isMasterOrb: true, location: '베호마 슬라임 등', minEffect: '회복량 +2%', maxEffect: '회복량 +12%' },
+                    { id: 'orb_wind_beat', group: '바람의 보주', name: '이겨내는 마음', steps: 6, isMasterOrb: true, location: '실버 데빌 등', minEffect: '개전 시 2%로 바이키르토', maxEffect: '개전 시 12%로 바이키르토' },
+                    { id: 'orb_light_charge', group: '빛의 보주', name: '필살의 비의', steps: 6, isMasterOrb: true, location: '시련의 문, 달인 퀘스트 등', minEffect: '필살 차지율 +0.5%', maxEffect: '필살 차지율 +3.0%' },
+                    { id: 'orb_dark_skill', group: '어둠의 보주', name: '천하무쌍의 극의', steps: 6, isMasterOrb: true, location: '메가자루록 등', minEffect: '데미지 +1%', maxEffect: '데미지 +6%' }
+                ]
+            },
+            {
+                id: 'strange_tower',
+                name: '이상한 마탑 · 이상한 카드',
+                icon: '🗼',
+                description: '이상한 카드(Lv.1~10) 옵션 강화 및 금·무지개 페더칩 소모량 계산',
+                guideUrl: 'https://dragon-quest.jp/ten/meikyuu/matou.php',
+                items: [
+                    {
+                        id: 'card_strange_main',
+                        group: '이상한 카드',
+                        name: '이상한 카드 (메인 스탯)',
+                        steps: 10,
+                        isStrangeCard: true,
+                        location: '이상한 마탑 교환소',
+                        levels: [
+                            'Lv.1: 최대 HP +4',
+                            'Lv.2: 최대 HP +4',
+                            'Lv.3: 공격력 +3',
+                            'Lv.4: 공격력 +3',
+                            'Lv.5: 민첩성 +5',
+                            'Lv.6: 최대 HP +5',
+                            'Lv.7: 공격력 +4',
+                            'Lv.8: 민첩성 +6',
+                            'Lv.9: 공격마력 +6',
+                            'Lv.10: 최대 HP +7'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'ganasadai_heart',
+                name: '가나사다이의 마음',
+                icon: '🖤',
+                description: '암흑황제 가나사다이 보상 액세서리의 사념 효과 최소치 / 최대치 달성 여부 관리',
+                items: [
+                    { id: 'gana_1', group: '사념 효과 목록', name: '물리 데미지 증가', steps: 2, isGanasadai: true, minEffect: '+1.0%', maxEffect: '+3.0%' },
+                    { id: 'gana_2', group: '사념 효과 목록', name: '주문 데미지 증가', steps: 2, isGanasadai: true, minEffect: '+1.0%', maxEffect: '+3.0%' },
+                    { id: 'gana_3', group: '사념 효과 목록', name: '행동 시 턴 소비 안 함', steps: 2, isGanasadai: true, minEffect: '+1.0%', maxEffect: '+2.5%' },
+                    { id: 'gana_4', group: '사념 효과 목록', name: '회심률 및 주문 폭주율', steps: 2, isGanasadai: true, minEffect: '+0.5%', maxEffect: '+1.5%' }
+                ]
+            },
+            {
+                id: 'green_treasure_box',
+                name: '녹색 보물 상자 (비취 열쇠)',
+                icon: '🟩',
+                description: '진 그란제도라 성 보물창고 5×5 녹색 보물 상자 개봉 현황 및 비취 열쇠 획득처 관리',
+                guideUrl: 'https://dragon-quest.jp/ten/item/hisui.php',
+                items: [
+                    ...Array.from({ length: 25 }, (_, idx) => ({
+                        id: `green_box_${idx + 1}`,
+                        group: '5×5 보물 상자',
+                        name: `${idx + 1}번 상자 보상`,
+                        steps: 1,
+                        isGreenBox: true,
+                        boxIndex: idx + 1,
+                        note: `${Math.floor(idx / 5) + 1}행 ${(idx % 5) + 1}열`
+                    })),
+                    { id: 'hisui_key_1', group: '비취 열쇠 획득처', name: '진 그란제도라 성 퀘스트 보상', steps: 1, location: '진 그란제도라 성', note: '스토리 진행 및 서브 퀘스트' },
+                    { id: 'hisui_key_2', group: '비취 열쇠 획득처', name: '카지노 경품 교환 (3,000 코인)', steps: 1, location: '오락섬 라카란 - 카지노', note: '1회 한정 교환' },
+                    { id: 'hisui_key_3', group: '비취 열쇠 획득처', name: '카지노 경품 교환 (5,000 코인)', steps: 1, location: '오락섬 라카란 - 카지노', note: '1회 한정 교환' },
+                    { id: 'hisui_key_4', group: '비취 열쇠 획득처', name: '카지노 경품 교환 (7,000 코인)', steps: 1, location: '오락섬 라카란 - 카지노', note: '1회 한정 교환' },
+                    { id: 'hisui_key_5', group: '비취 열쇠 획득처', name: '작은 메달 교환소 (30장)', steps: 1, location: '오락섬 라카란 - 메달 오너의 집', note: '1회 한정 교환' }
+                ]
+            },
+            {
+                id: 'monster_doctor',
+                name: '마물 박사의 모험적인 실험',
+                icon: '🧪',
+                description: '마물의 마음 교환 현황과 몬스터 하트 · 마물의 마음의 결정 필요량 자동 계산',
+                guideUrl: 'https://dragon-quest.jp/ten/monster/mamono_hakase.php',
+                items: [
+                    { id: 'mh_1', group: '마물의 마음 교환', name: '킬러머신의 마음', steps: 1, isMonsterHeart: true, heartCount: 1, crystalName: '마물의 마음의 결정 1', crystalCount: 6, heartEffect: '기계계 데미지 +5% / 소환 공격' },
+                    { id: 'mh_2', group: '마물의 마음 교환', name: '배틀렉스의 마음', steps: 1, isMonsterHeart: true, heartCount: 1, crystalName: '마물의 마음의 결정 1', crystalCount: 6, heartEffect: '드래곤계 데미지 +5% / 브레스 공격' },
+                    { id: 'mh_3', group: '마물의 마음 교환', name: '호이미 슬라임의 마음', steps: 1, isMonsterHeart: true, heartCount: 1, crystalName: '마물의 마음의 결정 1', crystalCount: 6, heartEffect: '회복마력 +15 / 범위 회복 소환' }
+                ]
+            },
+            {
+                id: 'adventure_seminar',
+                name: '모험 세미나',
+                icon: '🎓',
+                description: '모험 세미나 퀴즈 정답 정리 및 달성 항목 개수별 누적 보상 체크',
+                guideUrl: 'https://dragon-quest.jp/ten/guide/seminar.php',
+                milestoneRewards: [
+                    { count: 2, reward: '루라스톤 인장 / 복권권' },
+                    { count: 3, reward: '메탈 미궁 초대권' },
+                    { count: 4, reward: '황금 꽃잎 ×1' },
+                    { count: 5, reward: '제스처 서적 · 칭호' }
+                ],
+                items: [
+                    {
+                        id: 'sem_1',
+                        group: '기초 전술 강의',
+                        name: '1강. 전투 기초와 스모 전술',
+                        steps: 1,
+                        isAdventureSeminar: true,
+                        quizzes: [
+                            { q: '몬스터의 이동을 몸으로 막아 후열을 보호하는 전술은?', a: '벽(스모)' },
+                            { q: '일정 시간 동안 적의 반격이 발동하는 타이밍은?', a: '턴 엔드' }
+                        ]
+                    },
+                    {
+                        id: 'sem_2',
+                        group: '기초 전술 강의',
+                        name: '2강. 상태 이상과 내성 장비',
+                        steps: 1,
+                        isAdventureSeminar: true,
+                        quizzes: [
+                            { q: '연금 효과와 보주·반지를 합쳐 내성을 몇 %로 맞추면 완전 무효화되는가?', a: '100%' }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'ぐるぐる_zenias',
+                name: '비경 탐색 빙글빙글 제니아스',
+                icon: '🧭',
+                description: '온쵸의 탐색장(제1장 · 제2장) 지역별 조사 과제 및 빙고/달성 보상 관리',
+                guideUrl: 'https://dragon-quest.jp/ten/system/zeni/7_6b.php',
+                items: [
+                    { id: 'zen_2_1', group: '온쵸의 탐색장 제2장 - 몬스터 토벌', name: '무니에카 지방에서 잠을 조종하는 몬스터 1마리 토벌', steps: 1, location: '무니에카 지방', tag: '정답: 마탄고·조' },
+                    { id: 'zen_2_2', group: '온쵸의 탐색장 제2장 - 몬스터 토벌', name: '라란브라 산길에서 가장 레벨이 높은 몬스터 1마리 토벌', steps: 1, location: '라란브라 산길', tag: '정답: 노라이프 로드' },
+                    { id: 'zen_2_3', group: '온쵸의 탐색장 제2장 - 몬스터 토벌', name: '가난 제국령에서 가장 수가 많은 몬스터 1마리 토벌', steps: 1, location: '가난 제국령', tag: '정답: 그림자 기사·조' },
+                    { id: 'zen_2_4', group: '온쵸의 탐색장 제2장 - 몬스터 토벌', name: '가난 제국령에서 경험치가 가장 많은 몬스터 1마리 토벌', steps: 1, location: '가난 제국령', tag: '정답: 다이마진·조' },
+                    { id: 'zen_2_5', group: '온쵸의 탐색장 제2장 - 몬스터 토벌', name: '비의 섬에서 가장 부자인 몬스터 1마리 토벌', steps: 1, location: '비의 섬', tag: '정답: 킹 슬라임·강' },
+                    { id: 'zen_2_6', group: '온쵸의 탐색장 제2장 - 필드 조사', name: '타비아 초원의 거대한 암석으로 막힌 동굴 조사', steps: 1, location: '타비아 초원 (F-2)', tag: '제스처: 「불러세우기(よびかける)」' },
+                    { id: 'zen_2_7', group: '온쵸의 탐색장 제2장 - 필드 조사', name: '가난 제국령 카데스 감옥의 교수대 조사', steps: 1, location: '가난 제국령 (B-3)', tag: '제스처: 「기도하기(いのる)」' },
+                    { id: 'zen_2_8', group: '온쵸의 탐색장 제2장 - 필드 조사', name: '가난 제국령의 용도 불명 제단 조사', steps: 1, location: '가난 제국령 (G-3)', tag: '제스처: 「인사하기(おじぎ)」' },
+                    { id: 'zen_2_9', group: '온쵸의 탐색장 제2장 - 필드 조사', name: '레스토리아 평야의 거대한 지아 쿠트 결정 조사', steps: 1, location: '레스토리아 평야 (G-8)', tag: '조사하기' },
+                    { id: 'zen_2_10', group: '온쵸의 탐색장 제2장 - 필드 조사', name: '슈타르 광야 해수면에 솟은 미지의 광물 조사', steps: 1, location: '슈타르 광야 (F-2)', tag: '조사하기' }
+                ]
+            },
+            {
+                id: 'adventure_stamp_1',
+                name: '모험 스탬프 - 파트 1 (초급편)',
+                icon: '🎫',
+                description: '모험 스탬프 초급편 25개 과제 (전체 컴플리트 보상: 제스처 서적 「손잡기」)',
+                guideUrl: 'https://dragon-quest.jp/ten/guide/stamp1.php',
+                items: [
+                    { id: 'st1_1', group: '초기 마을 ~ Lv.14', name: '1. 보관소를 사용하고 싶어!', steps: 1, location: '퀘스트 「사랑과 신뢰의 보관소」 클리어' },
+                    { id: 'st1_2', group: '초기 마을 ~ Lv.14', name: '2. 주점을 사용하고 싶어!', steps: 1, location: '퀘스트 「모험자의 주점에 어서 오세요!」 클리어' },
+                    { id: 'st1_3', group: '초기 마을 ~ Lv.14', name: '3. 땀과 눈물의 결정이 필요해!', steps: 1, location: '퀘스트 「땀과 눈물과 소재상의 모자」 클리어' },
+                    { id: 'st1_4', group: '초기 마을 ~ Lv.14', name: '4. 돌보드를 타고 싶어!', steps: 1, location: '퀘스트 「라이드 온 돌보드!」 클리어' },
+                    { id: 'st1_5', group: '초기 마을 ~ Lv.14', name: '5. 일일 토벌에 도전하고 싶어!', steps: 1, location: '일일 토벌대 의뢰 1회 이상 클리어' },
+                    { id: 'st1_6', group: '초기 마을 ~ Lv.14', name: '6. 내 집을 갖고 싶어!', steps: 1, location: '주택 마을에서 자신의 토지 구입' },
+                    { id: 'st1_7', group: '초기 마을 ~ Lv.14', name: '7. 낚시를 하고 싶어!', steps: 1, location: '퀘스트 「그 자 낚시 노사」 클리어' },
+                    { id: 'st1_8', group: '초기 마을 ~ Lv.14', name: '8. 장인이 되고 싶어!', steps: 1, location: '아무 장인 길드에 가입하기' },
+                    { id: 'st1_9', group: 'Lv.15 ~ Lv.20', name: '9. 여행의 컨시어지를 쓰고 싶어!', steps: 1, location: '퀘스트 「여행의 동반자 컨시어지」 클리어' },
+                    { id: 'st1_10', group: 'Lv.15 ~ Lv.20', name: '10. 작은 메달과 아이템 교환!', steps: 1, location: '퀘스트 「메달 오너의 회한」 클리어' },
+                    { id: 'st1_11', group: 'Lv.15 ~ Lv.20', name: '11. 다른 직업으로 전직하고 싶어!', steps: 1, location: '퀘스트 「다마의 시련」 클리어' },
+                    { id: 'st1_12', group: 'Lv.15 ~ Lv.20', name: '12. 마법의 미궁에 도전하고 싶어!', steps: 1, location: '퀘스트 「마법의 열쇠의 동료들」 클리어' },
+                    { id: 'st1_13', group: 'Lv.21 ~ Lv.30', name: '13. 헤어스타일을 바꾸고 싶어!', steps: 1, location: '퀘스트 「헤어 컬러 시작합니다♪」 클리어' },
+                    { id: 'st1_14', group: 'Lv.21 ~ Lv.30', name: '14. 루라스톤을 더 갖고 싶어!', steps: 1, location: '퀘스트 「여행의 끝과 기억의 돌」 클리어' },
+                    { id: 'st1_15', group: 'Lv.21 ~ Lv.30', name: '15. 도구 가방 용량을 늘리고 싶어!', steps: 1, location: '퀘스트 「완고한 장인의 아들」 클리어' },
+                    { id: 'st1_16', group: 'Lv.21 ~ Lv.30', name: '16. 보관소 수납 수를 늘리고 싶어!', steps: 1, location: '퀘스트 「꿈의 창고 추가 계획!」 클리어' },
+                    { id: 'st1_17', group: 'Lv.31 ~ Lv.50', name: '17. 드레스업을 하고 싶어!', steps: 1, location: '퀘스트 「엄마와 나의 마법 재단술!」 클리어' },
+                    { id: 'st1_18', group: 'Lv.31 ~ Lv.50', name: '18. 장비 주머니 용량 확장!', steps: 1, location: '퀘스트 「장비 주머니 초정리술」 클리어' },
+                    { id: 'st1_19', group: 'Lv.31 ~ Lv.50', name: '19. 스킬 포인트를 재분배하고 싶어!', steps: 1, location: '퀘스트 「투신 라다 가트의 맹세」 클리어' },
+                    { id: 'st1_20', group: 'Lv.31 ~ Lv.50', name: '20. 검은 보물 상자를 열고 싶어!', steps: 1, location: '퀘스트 「열쇠 장인의 작은 상자」 클리어' },
+                    { id: 'st1_21', group: 'Lv.31 ~ Lv.50', name: '21. 장비를 컬러링하고 싶어!', steps: 1, location: '퀘스트 「오라 멋쟁이 마스터」 클리어' },
+                    { id: 'st1_22', group: 'Lv.31 ~ Lv.50', name: '22. 레벨 50 상한 해방!', steps: 1, location: '퀘스트 「높은 곳을 향하는 자」 클리어' },
+                    { id: 'st1_23', group: 'Lv.31 ~ Lv.50', name: '23. 특훈 모드로 스킬 포인트 획득!', steps: 1, location: '퀘스트 「귀신 교관의 특훈!」 클리어' },
+                    { id: 'st1_24', group: 'Lv.31 ~ Lv.50', name: '24. 강보스와 싸우고 싶어!', steps: 1, location: '퀘스트 「베지세르크의 포효」 클리어' },
+                    { id: 'st1_25', group: '모험자의 광장', name: '25. 보안 공부를 하고 싶어!', steps: 1, location: '모험자의 광장 「보안을 강화하려면…?」 열람' }
+                ]
+            },
+            {
+                id: 'adventure_stamp_2',
+                name: '모험 스탬프 - 중급편',
+                icon: '🎟️',
+                description: '모험 스탬프 중급편 25개 과제 (전체 컴플리트 보상: 제스처 서적 「라인 댄스」)',
+                guideUrl: 'https://dragon-quest.jp/ten/guide/stamp2.php',
+                items: [
+                    { id: 'st2_1', group: '중급편 과제 (1~13)', name: '1. 모험 스탬프 초급편 완료', steps: 1, location: '초급편 25개 과제 모두 클리어 및 보상 수령' },
+                    { id: 'st2_2', group: '중급편 과제 (1~13)', name: '2. 퀘스트 「마이타케 남자의 진로 상담」', steps: 1, location: '메기스트리스 도시 퀘스트 클리어' },
+                    { id: 'st2_3', group: '중급편 과제 (1~13)', name: '3. 퀘스트 「투박한 마을의 여배우」', steps: 1, location: '가타라 도시 퀘스트 클리어' },
+                    { id: 'st2_4', group: '중급편 과제 (1~13)', name: '4. 퀘스트 「세트 장비에 취해라」', steps: 1, location: '베리나드 도시 퀘스트 클리어' },
+                    { id: 'st2_5', group: '중급편 과제 (1~13)', name: '5. 퀘스트 「장인님을 만나고 싶어!」', steps: 1, location: '장인 소개 퀘스트 클리어' },
+                    { id: 'st2_6', group: '중급편 과제 (1~13)', name: '6. 퀘스트 「동경하는 칭호를 보고 싶어!」', steps: 1, location: '칭호 퀘스트 클리어' },
+                    { id: 'st2_7', group: '중급편 과제 (1~13)', name: '7. 후쿠비키(복권) 10회 이상 뽑기', steps: 1, location: '여관 컨시어지 복권 10회 실행' },
+                    { id: 'st2_8', group: '중급편 과제 (1~13)', name: '8. 미용실 머리 색상 추가 퀘스트', steps: 1, location: '머리 색상 추가 퀘스트 중 1종 클리어' },
+                    { id: 'st2_9', group: '중급편 과제 (1~13)', name: '9. 「필살기」 습득하기', steps: 1, location: '아무 직업 퀘스트 제4화 클리어' },
+                    { id: 'st2_10', group: '중급편 과제 (1~13)', name: '10. 합성 레벨 2 달성하기', steps: 1, location: '베리나드 합성점 리네 합성 Lv.2 달성' },
+                    { id: 'st2_11', group: '중급편 과제 (1~13)', name: '11. 옐로우 다이어리 주민 10명 만나기', steps: 1, location: '옐로우 다이어리 대상 NPC 10명 대화' },
+                    { id: 'st2_12', group: '중급편 과제 (1~13)', name: '12. 마법의 미궁 코인 보스 격파', steps: 1, location: '마법의 미궁에서 코인/카드 보스 승리' },
+                    { id: 'st2_13', group: '중급편 과제 (1~13)', name: '13. 주간 토벌 퀘스트 클리어', steps: 1, location: '렌더시아 주간 토벌 의뢰 클리어' },
+                    { id: 'st2_14', group: '중급편 과제 (14~25)', name: '14. 시련의 문 「빅 모몬」 토벌', steps: 1, location: '시련의 문에서 빅 모몬 격파' },
+                    { id: 'st2_15', group: '중급편 과제 (14~25)', name: '15. 피라미드의 비보 해방', steps: 1, location: '퀘스트 「황금의 비보를 찾아서」 클리어' },
+                    { id: 'st2_16', group: '중급편 과제 (14~25)', name: '16. 이상한 마탑 입문', steps: 1, location: '퀘스트 「올라라! 이상한 마탑」 클리어' },
+                    { id: 'st2_17', group: '중급편 과제 (14~25)', name: '17. 몬스터 배틀로드 참가 등록', steps: 1, location: '진 아라하기이로 배틀로드 등록' },
+                    { id: 'st2_18', group: '중급편 과제 (14~25)', name: '18. 왕가의 미궁 1층 클리어', steps: 1, location: '안루시아와 함께 왕가의 미궁 1층 돌파' },
+                    { id: 'st2_19', group: '중급편 과제 (14~25)', name: '19. 160~200 스킬 해방', steps: 1, location: '퀘스트 「마스터의 특별 레슨」 클리어' },
+                    { id: 'st2_20', group: '중급편 과제 (14~25)', name: '20. 비취 열쇠로 녹색 보물 상자 개봉', steps: 1, location: '녹색 보물 상자 1개 이상 개봉' },
+                    { id: 'st2_21', group: '중급편 과제 (14~25)', name: '21. 달인의 오브 수령', steps: 1, location: '달인의 오브 입수' },
+                    { id: 'st2_22', group: '중급편 과제 (14~25)', name: '22. 연금솥 사용하기', steps: 1, location: '연금솥으로 아이템 1회 연금' },
+                    { id: 'st2_23', group: '중급편 과제 (14~25)', name: '23. 카지노 스고로쿠 플레이', steps: 1, location: '카지노 주사위 게임 1회 플레이' },
+                    { id: 'st2_24', group: '중급편 과제 (14~25)', name: '24. 아리오스 왕 스탬프 카드 8장 완성', steps: 1, location: '빛나는 칸 모두 클리어' },
+                    { id: 'st2_25', group: '중급편 과제 (14~25)', name: '25. 선물의 주문 입력하기', steps: 1, location: '선물의 주문 1개 이상 입력' }
+                ]
+            },
+            {
+                id: 'adventure_stamp_3',
+                name: '모험 스탬프 - 점술사편',
+                icon: '🃏',
+                description: '모험 스탬프 점술사편 22개 과제 및 스탬프 누적 달성 보상',
+                guideUrl: 'https://dragon-quest.jp/ten/guide/stamp3.php',
+                milestoneRewards: [
+                    { count: 4, reward: '메달 주머니 ×3' },
+                    { count: 7, reward: '복권권 ×30' },
+                    { count: 10, reward: '타로 팩·적 ×1' },
+                    { count: 13, reward: '원기옥 ×3' },
+                    { count: 16, reward: '녹색 연금석 ×5' },
+                    { count: 19, reward: '타로 팩·은 ×1' },
+                    { count: 22, reward: '메탈 미궁 초대권 ×1' }
+                ],
+                items: [
+                    { id: 'st3_1', group: '점술사편 과제 (1~11)', name: '1. 퀘스트 「다마의 시련」 클리어', steps: 1 },
+                    { id: 'st3_2', group: '점술사편 과제 (1~11)', name: '2. 퀘스트 「급모! 견습 점술사」 클리어', steps: 1 },
+                    { id: 'st3_3', group: '점술사편 과제 (1~11)', name: '3. 점술사에 대해 배우자! (광장 열람)', steps: 1 },
+                    { id: 'st3_4', group: '점술사편 과제 (1~11)', name: '4. 퀘스트 「어서 와 비기너!」 클리어', steps: 1 },
+                    { id: 'st3_5', group: '점술사편 과제 (1~11)', name: '5. 점술사 레벨 20 이상 달성', steps: 1 },
+                    { id: 'st3_6', group: '점술사편 과제 (1~11)', name: '6. 점술사 레벨 30 이상 달성', steps: 1 },
+                    { id: 'st3_7', group: '점술사편 과제 (1~11)', name: '7. 점술사 레벨 40 이상 달성', steps: 1 },
+                    { id: 'st3_8', group: '점술사편 과제 (1~11)', name: '8. 퀘스트 「타로 합성을 하자!」 클리어', steps: 1 },
+                    { id: 'st3_9', group: '점술사편 과제 (1~11)', name: '9. 몬스터 타로 15종류 이상 획득', steps: 1 },
+                    { id: 'st3_10', group: '점술사편 과제 (1~11)', name: '10. 몬스터 타로 20종류 이상 획득', steps: 1 },
+                    { id: 'st3_11', group: '점술사편 과제 (1~11)', name: '11. 몬스터 타로 25종류 이상 획득', steps: 1 },
+                    { id: 'st3_12', group: '점술사편 과제 (12~22)', name: '12. 랭크 S 몬스터 타로 획득', steps: 1 },
+                    { id: 'st3_13', group: '점술사편 과제 (12~22)', name: '13. 퀘스트 「마음을 잇는 첫 일」 클리어', steps: 1 },
+                    { id: 'st3_14', group: '점술사편 과제 (12~22)', name: '14. 퀘스트 「빛나는 기대의 별」 클리어', steps: 1 },
+                    { id: 'st3_15', group: '점술사편 과제 (12~22)', name: '15. 퀘스트 「점술사들의 휴일」 클리어', steps: 1 },
+                    { id: 'st3_16', group: '점술사편 과제 (12~22)', name: '16. 「점술」 스킬 40P 이상 배분', steps: 1 },
+                    { id: 'st3_17', group: '점술사편 과제 (12~22)', name: '17. 「점술」 스킬 80P 이상 배분', steps: 1 },
+                    { id: 'st3_18', group: '점술사편 과제 (12~22)', name: '18. 「점술」 스킬 100P 이상 배분', steps: 1 },
+                    { id: 'st3_19', group: '점술사편 과제 (12~22)', name: '19. 「타로 메달」 획득하기', steps: 1 },
+                    { id: 'st3_20', group: '점술사편 과제 (12~22)', name: '20. 마법의 미궁 「타로 마인」 격파', steps: 1 },
+                    { id: 'st3_21', group: '점술사편 과제 (12~22)', name: '21. 「타로 팩·은」 획득하기', steps: 1 },
+                    { id: 'st3_22', group: '점술사편 과제 (12~22)', name: '22. 랭크 SS 몬스터 타로 획득 (엔젤슬라임/와타보우)', steps: 1 }
+                ]
+            },
+            {
+                id: 'tensei_monsters',
+                name: '전생 몬스터 (Ver.1 ~ Ver.8.1)',
+                icon: '👾',
+                description: '기적의 향수로 출현하는 전생 몬스터 토벌 및 헌터 칭호 체크리스트',
+                guideUrl: 'https://mazigappo.jp/e/dq10_tensei_monster-list',
+                items: [
+                    { id: 'tm_8_1', group: 'Ver.8', name: '오크 가드', steps: 1, tag: '원종: 오크', location: '거짓된 이름 없는 초원 E-3 주변 / 진 이름 없는 초원 북쪽', note: '칭호: 猪人番兵ハンター · 빛의 보주: 끝없는 텐션 부스트' },
+                    { id: 'tm_8_2', group: 'Ver.8', name: '카이저 슬라임', steps: 1, tag: '원종: 킹 슬라임', location: '라디스 왕섬 남서쪽 강적 지대 / 사자미레 초원 D-4 고지대', note: '칭호: 粘塊皇帝ハンター' },
+                    { id: 'tm_7_1', group: 'Ver.7', name: '아게아게라바', steps: 1, tag: '원종: 캐터필러', location: '모가림 가도 중앙~서부 / 그렌령 동쪽', note: '칭호: 揚羽妖虫ハンター' },
+                    { id: 'tm_7_2', group: 'Ver.7', name: '트리케란', steps: 1, tag: '원종: 대시란', location: '자마 고개 박애의 비 주변 / 가트란트령 D-4~D-5', note: '칭호: 突角走竜ハンター' },
+                    { id: 'tm_7_3', group: 'Ver.7', name: '히쿠이나돈', steps: 1, tag: '원종: 란돈쿠이나', location: '란돈 풋(현재) 북쪽 B-4~C-4 / 란돈 산맥 서부', note: '칭호: 火食猛禽ハンター' },
+                    { id: 'tm_7_4', group: 'Ver.7', name: '젠틀 댄스', steps: 1, tag: '원종: 그리고 댄스', location: '수수께끼의 지하 미궁 안쪽 / 페슈야 지하 공동', note: '칭호: 舞踏紳士ハンター' },
+                    { id: 'tm_7_5', group: 'Ver.7', name: '부르주아 핸드', steps: 1, tag: '원종: 데마네키 링', location: '메기라자 동굴 보스방 앞 / 론다 얼음굴 지하 2층', note: '칭호: 金満妖手ハンター' },
+                    { id: 'tm_7_6', group: 'Ver.7', name: '쿠라게 보야', steps: 1, tag: '원종: 대왕 키즈', location: '모가레 동굴 입구 부근 / 오룻파 지하 동굴', note: '칭호: 海月童子ハンター' },
+                    { id: 'tm_7_7', group: 'Ver.7', name: '스카라베 텐츠쿠', steps: 1, tag: '원종: 텐츠쿠', location: '자연유산 보호구 북쪽 샛길 / 우주선 출입금지구획 2층', note: '칭호: 甲玉天突ハンター' },
+                    { id: 'tm_6_1', group: 'Ver.6', name: '바론 실루엣', steps: 1, tag: '원종: 수상한 그림자', location: '수수께끼의 지하수로 제2층 / 거짓 아라하기이로 지하 동굴', note: '칭호: 影絵男爵ハンター' },
+                    { id: 'tm_6_2', group: 'Ver.6', name: '울 기즈모', steps: 1, tag: '원종: 기즈모', location: '그렌령 서쪽 F-3~F-5 절벽 / 맑은 물의 동굴 북부', note: '칭호: 羊毛雲塊ハンター' },
+                    { id: 'tm_6_3', group: 'Ver.6', name: '미노카사하긴', steps: 1, tag: '원종: 네일 비스트', location: '베리나드령 남쪽 G-4~F-5 부근', note: '칭호: 縞々魚人ハンター' },
+                    { id: 'tm_6_4', group: 'Ver.6', name: '아야시이타케', steps: 1, tag: '원종: 요괴 버섯', location: '벨바인 숲 서북부 / 가우시아 수해 입구 북쪽', note: '칭호: 妖怪茸ハンター' },
+                    { id: 'tm_6_5', group: 'Ver.6', name: '로얄 전갈벌', steps: 1, tag: '원종: 전갈벌', location: '라니아카 단층대 아그라니 마을 주변', note: '칭호: 王蜜毒蜂ハンター' },
+                    { id: 'tm_6_6', group: 'Ver.6', name: '용암 토치', steps: 1, tag: '원종: 요괴 촛불', location: '구원의 숲 입구~세계수의 언덕 삼거리 (밤 한정)', note: '칭호: 溶岩炬火ハンター' },
+                    { id: 'tm_5_1', group: 'Ver.5', name: '네리 모노노후', steps: 1, tag: '원종: 주키냐', location: '게르헤나 환야 / 시련의 황야 중층', note: '칭호: 練物武人ハンター' },
+                    { id: 'tm_5_2', group: 'Ver.5', name: '후긴 무닌', steps: 1, tag: '원종: 큰까마귀', location: '자림바하 사막 / 큐론 구릉 남동부', note: '칭호: 黒翼凶鳥ハンター' },
+                    { id: 'tm_5_3', group: 'Ver.5', name: '애머지스트 크랩', steps: 1, tag: '원종: 군대 게', location: '가타라 원야 B-5 물가 / 오피느 해저', note: '칭호: 紫水晶蟹ハンター' },
+                    { id: 'tm_5_4', group: 'Ver.5', name: '삼바 데 비크', steps: 1, tag: '원종: 큰부리새', location: '그렌령 동쪽 남부 / 그렌령 서쪽', note: '칭호: 羽冠走鳥ハンター' },
+                    { id: 'tm_5_5', group: 'Ver.5', name: '모쟈라키 라쿤', steps: 1, tag: '원종: 모몬쟈', location: '고·에테네 왕국령 서부~남부·북동부', note: '칭호: 焼物鳥獣ハンター' },
+                    { id: 'tm_5_6', group: 'Ver.5', name: '강시 고스트', steps: 1, tag: '원종: 고스트', location: '더러움의 골짜기 입구~F-3 (지역 한정)', note: '칭호: 封札幽霊ハンター' }
+                ]
+            },
+            {
+                id: 'accessories',
+                name: '악세서리 (이론치 · 획득처)',
+                icon: '💍',
+                description: '주요 보스/코인 악세서리의 기본 효과, 스테이터스, 합성 최대치 및 획득 방법 관리',
+                items: [
+                    { id: 'acc_last_choker', group: '얼굴 · 목 악세서리', name: '라스트 초커', steps: 1, isAccessory: true, accBase: '개전 시 50%로 바이키르토', accStat: '공격력 +30, 최대 HP +15', accSynth: '공격력 +5 × 3 (총 +45)', location: '결계의 수호자들 (코인 보스)' },
+                    { id: 'acc_magic_glasses', group: '얼굴 · 목 악세서리', name: '마견의 가면', steps: 1, isAccessory: true, accBase: '필살 차지 시 바이키르토·마력각성 등', accStat: '최대 HP +12, 수비력 +10', accSynth: '필살 차지 시 효과 계승 × 3', location: '마견 레오파드 (코인 보스)' },
+                    { id: 'acc_god_belt', group: '허리 · 손가락 악세서리', name: '무인의 투희 반지', steps: 1, isAccessory: true, accBase: '행동 시 10%로 바이시온', accStat: '공격력 +10, 최대 HP +10', accSynth: '공격력 +2 × 3 (총 +16)', location: '장군 3인방 / 무인의 환투장' }
+                ]
+            },
+            {
+                id: 'casino',
+                name: '카지노 경품 교환소',
+                icon: '🎰',
+                description: '오락섬 라카란 카지노 경품 및 필요 코인 매수 체크리스트',
+                guideUrl: 'https://dragon-quest.jp/ten/system/kajino.php',
+                items: [
+                    { id: 'cas_1', group: '1회 한정 주요 경품', name: '루라스톤', steps: 1, tag: '5,000 코인', location: '카지노 경품 교환소' },
+                    { id: 'cas_2', group: '1회 한정 주요 경품', name: '비취 열쇠 (1번째)', steps: 1, tag: '3,000 코인', location: '카지노 경품 교환소' },
+                    { id: 'cas_3', group: '1회 한정 주요 경품', name: '비취 열쇠 (2번째)', steps: 1, tag: '5,000 코인', location: '카지노 경품 교환소' },
+                    { id: 'cas_4', group: '1회 한정 주요 경품', name: '비취 열쇠 (3번째)', steps: 1, tag: '7,000 코인', location: '카지노 경품 교환소' },
+                    { id: 'cas_5', group: '1회 한정 주요 경품', name: 'VIP 라이선스', steps: 1, tag: '20,000 코인', location: '카지노 경품 교환소' },
+                    { id: 'cas_6', group: '1회 한정 주요 경품', name: '마법의 양탄자 프리즘', steps: 1, tag: '50,000 코인', location: '카지노 경품 교환소' },
+                    { id: 'cas_7', group: '1회 한정 주요 경품', name: '고스트 프리즘', steps: 1, tag: '150,000 코인', location: '카지노 경품 교환소' },
+                    { id: 'cas_8', group: '제스처 · 장비 · 악세서리', name: '신비의 카드', steps: 1, tag: '3,000 코인', location: '카지노 경품 교환소' },
+                    { id: 'cas_9', group: '제스처 · 장비 · 악세서리', name: '행운의 부적 (레어 드랍률 +1.1배)', steps: 1, tag: '300,000 코인', location: '카지노 경품 교환소' },
+                    { id: 'cas_10', group: '제스처 · 장비 · 악세서리', name: '제스처 서적 「꽃다발」', steps: 1, tag: '30,000 코인', location: '카지노 경품 교환소' },
+                    { id: 'cas_11', group: '하우징 · 스페셜 경품', name: '킹 슬라임 하우스', steps: 1, tag: '2,500,000 코인', location: '카지노 경품 교환소' }
+                ]
+            }
+        ];
+
+        // =========================================================================
+        // 2. 전역 상태 변수 및 유틸리티
+        // =========================================================================
+        let catalog = [];
+        let myProgress = {};
+        let currentCategoryId = null;
+        let isEditMode = false;
+        let expandedTreeIds = {};
+        let currentModalImageData = '';
+        let toastTimer = null;
+
+        function escapeHtml(str) {
+            return String(str ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function showToast(msg) {
+            const box = document.getElementById('toast-box');
+            const text = document.getElementById('toast-message');
+            if (!box || !text) return;
+            text.textContent = msg;
+            box.classList.remove('opacity-0');
+            if (toastTimer) clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => {
+                box.classList.add('opacity-0');
+            }, 2400);
+        }
+
+        // =========================================================================
+        // 3. F12 콘솔 및 단축키 전용 편집 모드 제어 (기본 화면에서는 추가·수정·관리 숨김)
+        // =========================================================================
+        function setEditMode(enabled) {
+            isEditMode = !!enabled;
+            document.body.classList.toggle('edit-mode', isEditMode);
+            if (currentCategoryId) renderDetailView();
+            else renderHubView();
+            showToast(isEditMode ? '작성자 편집 모드가 활성화되었습니다.' : '편집 모드가 비활성화되었습니다.');
+            return isEditMode ? 'EDIT_MODE: ON' : 'EDIT_MODE: OFF';
+        }
+
+        window.enableEdit = () => setEditMode(true);
+        window.disableEdit = () => setEditMode(false);
+        window.toggleEdit = () => setEditMode(!isEditMode);
+
+        // 화면 클릭 후 Ctrl + Shift + E (또는 Cmd + Shift + E) 단축키로 편집 모드 전환
+        window.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.code === 'KeyE') {
+                e.preventDefault();
+                setEditMode(!isEditMode);
+            }
+        });
+
+        // =========================================================================
+        // 4. 초기화 및 로컬 스토리지 저장/로드
+        // =========================================================================
+        function initState() {
+            try {
+                const savedCat = localStorage.getItem(STORAGE_CATALOG_KEY);
+                if (savedCat) {
+                    const parsed = JSON.parse(savedCat);
+                    catalog = Array.isArray(parsed) && parsed.length > 0
+                        ? parsed
+                        : JSON.parse(JSON.stringify(DEFAULT_CATALOG));
+                } else {
+                    catalog = JSON.parse(JSON.stringify(DEFAULT_CATALOG));
+                }
+            } catch (e) {
+                catalog = JSON.parse(JSON.stringify(DEFAULT_CATALOG));
+            }
+
+            try {
+                const savedProg = localStorage.getItem(STORAGE_PROGRESS_KEY);
+                myProgress = savedProg ? JSON.parse(savedProg) : {};
+            } catch (e) {
+                myProgress = {};
+            }
+
+            isEditMode = false;
+            document.body.classList.remove('edit-mode');
+        }
+
+        function saveCatalog() {
+            try {
+                localStorage.setItem(STORAGE_CATALOG_KEY, JSON.stringify(catalog));
+            } catch (e) {
+                showToast('저장 공간이 부족합니다. 일부 이미지를 줄여주세요.');
+            }
+        }
+
+        function saveProgress() {
+            try {
+                localStorage.setItem(STORAGE_PROGRESS_KEY, JSON.stringify(myProgress));
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        // =========================================================================
+        // 5. 진행도 계산 헬퍼
+        // =========================================================================
+        function getItemSteps(item) {
+            return Math.max(1, parseInt(item.steps || 1, 10));
+        }
+
+        function getItemCurrentStep(item) {
+            const maxStep = getItemSteps(item);
+            const val = parseInt(myProgress[item.id] || 0, 10);
+            return Math.max(0, Math.min(maxStep, val));
+        }
+
+        function isItemCompleted(item) {
+            return getItemCurrentStep(item) >= getItemSteps(item);
+        }
+
+        function calcCategoryStats(cat) {
+            const items = cat.items || [];
+            let totalItems = items.length;
+            let completedItems = 0;
+            let totalUnits = 0;
+            let completedUnits = 0;
+
+            items.forEach(item => {
+                const maxStep = getItemSteps(item);
+                const curStep = getItemCurrentStep(item);
+                totalUnits += maxStep;
+                completedUnits += curStep;
+                if (curStep >= maxStep) completedItems++;
+            });
+
+            const percent = totalUnits === 0 ? 0 : Math.round((completedUnits / totalUnits) * 100);
+            return { totalItems, completedItems, totalUnits, completedUnits, percent };
+        }
+
+        function calcOverallStats() {
+            let totalItems = 0;
+            let completedItems = 0;
+            let totalUnits = 0;
+            let completedUnits = 0;
+
+            catalog.forEach(cat => {
+                const st = calcCategoryStats(cat);
+                totalItems += st.totalItems;
+                completedItems += st.completedItems;
+                totalUnits += st.totalUnits;
+                completedUnits += st.completedUnits;
+            });
+
+            const percent = totalUnits === 0 ? 0 : Math.round((completedUnits / totalUnits) * 100);
+            return { totalItems, completedItems, totalUnits, completedUnits, percent };
+        }
+
+        function calcStrangeCardFeatherChips(level) {
+            const lv = Math.max(0, Math.min(10, parseInt(level || 0, 10)));
+            const goldCosts = [1, 2, 3, 4, 5];
+            const rainbowCosts = [1, 2, 3, 4, 8];
+            let usedGold = 0;
+            let usedRainbow = 0;
+            for (let i = 1; i <= lv; i++) {
+                if (i <= 5) usedGold += goldCosts[i - 1];
+                else usedRainbow += rainbowCosts[i - 6];
+            }
+            const totalGold = 15;
+            const totalRainbow = 18;
+            return {
+                usedGold,
+                remainGold: totalGold - usedGold,
+                usedRainbow,
+                remainRainbow: totalRainbow - usedRainbow
+            };
+        }
+
+        function calcStrangeCardTotalEffects(item, level) {
+            const lv = Math.max(0, Math.min(10, parseInt(level || 0, 10)));
+            if (lv === 0) return '강화 없음';
+            const sums = {};
+            const order = [];
+            for (let i = 0; i < lv; i++) {
+                const raw = (item.levels && item.levels[i]) ? item.levels[i] : '';
+                const body = raw.replace(/^Lv\.\d+\s*:\s*/i, '').trim();
+                if (!body) continue;
+                const m = body.match(/^(.+?)\s*\+\s*(\d+(?:\.\d+)?)(.*)$/);
+                if (m) {
+                    const key = `${m[1].trim()}|${m[3].trim()}`;
+                    if (!sums[key]) {
+                        sums[key] = { label: m[1].trim(), val: 0, suffix: m[3].trim() };
+                        order.push(key);
+                    }
+                    sums[key].val += parseFloat(m[2]);
+                } else {
+                    const key = `raw_${i}`;
+                    sums[key] = { raw: body };
+                    order.push(key);
+                }
+            }
+            if (order.length === 0) return `Lv.${lv} 강화 완료`;
+            return order.map(k => {
+                const entry = sums[k];
+                if (entry.raw) return entry.raw;
+                return `${entry.label} +${Number.isInteger(entry.val) ? entry.val : entry.val.toFixed(1)}${entry.suffix}`;
+            }).join(' / ');
+        }
+
+        // =========================================================================
+        // 6. 화면 전환 및 허브 뷰 렌더링
+        // =========================================================================
+        function goHome() {
+            currentCategoryId = null;
+            document.getElementById('view-detail').classList.add('hidden');
+            document.getElementById('view-hub').classList.remove('hidden');
+            renderHubView();
+        }
+
+        function openCategory(catId) {
+            currentCategoryId = catId;
+            document.getElementById('view-hub').classList.add('hidden');
+            document.getElementById('view-detail').classList.remove('hidden');
+            const searchInput = document.getElementById('detail-search-input');
+            if (searchInput) searchInput.value = '';
+            renderDetailView();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function renderHubView() {
+            const overall = calcOverallStats();
+            document.getElementById('overall-percentage').textContent = `${overall.percent}%`;
+            document.getElementById('overall-count-text').textContent = `${overall.completedItems} / ${overall.totalItems} 항목 완료`;
+            document.getElementById('overall-remaining-text').textContent = `남은 항목 ${Math.max(0, overall.totalItems - overall.completedItems)}개`;
+            document.getElementById('overall-progress-bar').style.width = `${overall.percent}%`;
+            document.getElementById('category-count-badge').textContent = `총 ${catalog.length}개 카테고리`;
+
+            const grid = document.getElementById('category-grid');
+            grid.innerHTML = catalog.map((cat, idx) => {
+                const st = calcCategoryStats(cat);
+                const isDone = st.totalItems > 0 && st.completedItems === st.totalItems;
+                const canMovePrev = idx > 0;
+                const canMoveNext = idx < catalog.length - 1;
+                return `
+                    <div onclick="openCategory('${cat.id}')" class="group bg-white hover:border-indigo-400 rounded-2xl border ${isDone ? 'border-emerald-300 bg-emerald-50/20' : 'border-slate-200'} p-5 shadow-2xs hover:shadow-md transition cursor-pointer flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-start justify-between gap-2 mb-3">
+                                <div class="w-11 h-11 rounded-2xl ${isDone ? 'bg-emerald-100 text-emerald-700' : 'bg-indigo-50 text-indigo-600'} flex items-center justify-center text-xl shrink-0 group-hover:scale-105 transition">
+                                    ${escapeHtml(cat.icon || '📦')}
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    ${isDone ? '<span class="px-2 py-0.5 rounded-full text-[11px] font-extrabold bg-emerald-100 text-emerald-700">완료!</span>' : ''}
+                                    <button type="button" onclick="event.stopPropagation(); moveCategory('${cat.id}', -1)" ${canMovePrev ? '' : 'disabled'} class="edit-only p-1.5 rounded-lg text-xs font-bold transition ${canMovePrev ? 'text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 cursor-pointer' : 'text-slate-200 cursor-not-allowed'}" title="카테고리 앞으로 이동">
+                                        ◀
+                                    </button>
+                                    <button type="button" onclick="event.stopPropagation(); moveCategory('${cat.id}', 1)" ${canMoveNext ? '' : 'disabled'} class="edit-only p-1.5 rounded-lg text-xs font-bold transition ${canMoveNext ? 'text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 cursor-pointer' : 'text-slate-200 cursor-not-allowed'}" title="카테고리 뒤로 이동">
+                                        ▶
+                                    </button>
+                                    <button onclick="event.stopPropagation(); openCategoryModal('${cat.id}')" class="edit-only p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition" title="카테고리 편집">
+                                        ✏️
+                                    </button>
+                                </div>
+                            </div>
+                            <h4 class="text-base font-extrabold text-slate-900 group-hover:text-indigo-600 transition">
+                                ${escapeHtml(cat.name)}
+                            </h4>
+                            <p class="text-xs text-slate-500 mt-1 line-clamp-2 leading-relaxed">
+                                ${escapeHtml(cat.description || '')}
+                            </p>
+                        </div>
+
+                        <div class="mt-4 pt-3 border-t border-slate-100">
+                            <div class="flex items-center justify-between text-xs mb-1.5">
+                                <span class="font-bold ${isDone ? 'text-emerald-600' : 'text-indigo-600'}">${st.percent}%</span>
+                                <span class="font-semibold text-slate-500">${st.completedItems} / ${st.totalItems} 완료</span>
+                            </div>
+                            <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                                <div class="h-full ${isDone ? 'bg-emerald-500' : 'bg-indigo-600'} rounded-full progress-transition" style="width: ${st.percent}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // =========================================================================
+        // 7. 세부 뷰 및 특수 카테고리 UI 렌더링
+        // =========================================================================
+        function renderDetailView() {
+            const cat = catalog.find(c => c.id === currentCategoryId);
+            if (!cat) {
+                goHome();
+                return;
+            }
+
+            const st = calcCategoryStats(cat);
+            document.getElementById('detail-cat-icon').textContent = cat.icon || '📦';
+            document.getElementById('detail-cat-title').textContent = cat.name;
+            document.getElementById('detail-cat-desc').textContent = cat.description || '';
+            document.getElementById('detail-cat-percent').textContent = `${st.percent}%`;
+            document.getElementById('detail-cat-count').textContent = `${st.completedItems} / ${st.totalItems} 항목 완료 (${st.completedUnits}/${st.totalUnits})`;
+            document.getElementById('detail-cat-bar').style.width = `${st.percent}%`;
+            document.getElementById('detail-edit-cat-btn').onclick = () => openCategoryModal(cat.id);
+
+            const guideLink = document.getElementById('detail-guide-link');
+            if (cat.guideUrl) {
+                guideLink.href = cat.guideUrl;
+                guideLink.classList.remove('hidden');
+            } else {
+                guideLink.classList.add('hidden');
+            }
+
+            // 특수 요약 배너 렌더링
+            renderSpecialCategoryBanner(cat);
+
+            // 녹색 보물 상자 전용 레이아웃 분기
+            if (cat.id === 'green_treasure_box') {
+                renderGreenTreasureBoxDetail(cat);
+                return;
+            }
+
+            const query = (document.getElementById('detail-search-input').value || '').trim().toLowerCase();
+            const missingOnly = document.getElementById('filter-missing-only').checked;
+
+            const filteredItems = (cat.items || []).filter(item => {
+                if (missingOnly && isItemCompleted(item)) return false;
+                if (!query) return true;
+                const hay = [
+                    item.name, item.group, item.location, item.note, item.tag,
+                    item.minEffect, item.maxEffect, item.accBase, item.accStat, item.accSynth,
+                    item.crystalName, item.heartEffect
+                ].filter(Boolean).join(' ').toLowerCase();
+                return hay.includes(query);
+            });
+
+            const container = document.getElementById('detail-items-container');
+            if (filteredItems.length === 0) {
+                container.innerHTML = `
+                    <div class="bg-white rounded-2xl border border-slate-200 p-10 text-center space-y-2">
+                        <div class="text-3xl">📭</div>
+                        <p class="text-sm font-bold text-slate-700">표시할 항목이 없습니다.</p>
+                        <p class="text-xs text-slate-400">검색 조건을 변경해 보세요.</p>
+                        <button onclick="openItemModal('${cat.id}')" class="edit-only mt-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition">
+                            + ${escapeHtml(cat.name)}에 항목 추가
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            // 그룹별 묶기 (원본 순서 유지)
+            const groups = [];
+            const groupMap = {};
+            filteredItems.forEach(item => {
+                const gName = item.group || '기본 목록';
+                if (!groupMap[gName]) {
+                    groupMap[gName] = [];
+                    groups.push(gName);
+                }
+                groupMap[gName].push(item);
+            });
+
+            container.innerHTML = groups.map((gName, gIdx) => {
+                const gItems = groupMap[gName];
+                const gDone = gItems.filter(isItemCompleted).length;
+                const canMoveGroupUp = !query && !missingOnly && gIdx > 0;
+                const canMoveGroupDown = !query && !missingOnly && gIdx < groups.length - 1;
+
+                return `
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden">
+                        <div class="px-4 sm:px-5 py-3 bg-slate-50 border-b border-slate-200 flex items-center justify-between gap-2">
+                            <div class="flex items-center gap-2 min-w-0">
+                                <h3 class="text-sm font-extrabold text-slate-800 truncate">${escapeHtml(gName)}</h3>
+                                <span class="px-2 py-0.5 rounded-full text-[11px] font-bold ${gDone === gItems.length ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-200 text-slate-600'}">
+                                    ${gDone} / ${gItems.length}
+                                </span>
+                            </div>
+                            <div class="edit-only flex items-center gap-1 shrink-0">
+                                <button type="button" onclick="moveGroupInCategory('${cat.id}', '${escapeHtml(gName).replace(/'/g, "\\'")}', -1)" ${canMoveGroupUp ? '' : 'disabled'} class="px-2 py-1 rounded-lg text-[11px] font-bold transition ${canMoveGroupUp ? 'text-slate-500 hover:bg-slate-200 cursor-pointer' : 'text-slate-300 cursor-not-allowed'}" title="그룹 위로 이동">▲</button>
+                                <button type="button" onclick="moveGroupInCategory('${cat.id}', '${escapeHtml(gName).replace(/'/g, "\\'")}', 1)" ${canMoveGroupDown ? '' : 'disabled'} class="px-2 py-1 rounded-lg text-[11px] font-bold transition ${canMoveGroupDown ? 'text-slate-500 hover:bg-slate-200 cursor-pointer' : 'text-slate-300 cursor-not-allowed'}" title="그룹 아래로 이동">▼</button>
+                            </div>
+                        </div>
+                        <div class="divide-y divide-slate-100">
+                            ${gItems.map(item => renderDetailItemRow(cat, item)).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderSpecialCategoryBanner(cat) {
+            const banner = document.getElementById('detail-special-banner');
+            if (!banner) return;
+
+            if (cat.id === 'monster_doctor') {
+                let usedHearts = 0;
+                let totalHearts = 0;
+                const crystalStats = {};
+                (cat.items || []).forEach(it => {
+                    const hc = parseInt(it.heartCount || 0, 10);
+                    const cc = parseInt(it.crystalCount || 0, 10);
+                    const cname = it.crystalName || '마물의 마음의 결정';
+                    const done = isItemCompleted(it);
+                    totalHearts += hc;
+                    if (done) usedHearts += hc;
+                    if (!crystalStats[cname]) crystalStats[cname] = { used: 0, total: 0 };
+                    crystalStats[cname].total += cc;
+                    if (done) crystalStats[cname].used += cc;
+                });
+                const crystalBadges = Object.entries(crystalStats).map(([cname, st]) => `
+                    <div class="bg-white rounded-xl px-3 py-2 border border-rose-200">
+                        <div class="text-[11px] font-bold text-slate-500">💎 ${escapeHtml(cname)}</div>
+                        <div class="text-xs font-extrabold text-rose-700 mt-0.5">사용 ${st.used}개 / 남은 필요 ${st.total - st.used}개</div>
+                    </div>
+                `).join('');
+                banner.innerHTML = `
+                    <div class="bg-rose-50/70 border border-rose-200 rounded-xl p-3.5 space-y-2">
+                        <div class="text-xs font-extrabold text-rose-800">🧪 마물의 마음 교환 재료 집계</div>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                            <div class="bg-white rounded-xl px-3 py-2 border border-rose-200">
+                                <div class="text-[11px] font-bold text-slate-500">💗 몬스터 하트</div>
+                                <div class="text-xs font-extrabold text-rose-700 mt-0.5">사용 ${usedHearts}개 / 남은 필요 ${totalHearts - usedHearts}개</div>
+                            </div>
+                            ${crystalBadges}
+                        </div>
+                    </div>
+                `;
+                banner.classList.remove('hidden');
+                return;
+            }
+
+            if (cat.id === 'adventure_seminar' || (cat.milestoneRewards && cat.milestoneRewards.length > 0)) {
+                const completedCount = (cat.items || []).filter(isItemCompleted).length;
+                const rewards = cat.milestoneRewards || [];
+                banner.innerHTML = `
+                    <div class="bg-sky-50/80 border border-sky-200 rounded-xl p-3.5 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-extrabold text-sky-900">🏆 달성 항목 개수별 누적 보상 (현재 ${completedCount}개 달성)</span>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            ${rewards.map(r => {
+                                const reached = completedCount >= r.count;
+                                return `
+                                    <span class="px-2.5 py-1 rounded-lg text-xs font-bold border ${reached ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white text-slate-600 border-sky-200'}">
+                                        ${reached ? '✓ ' : ''}${r.count}개 달성: ${escapeHtml(r.reward)}
+                                    </span>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+                banner.classList.remove('hidden');
+                return;
+            }
+
+            if (cat.id === 'ぐるぐる_zenias') {
+                const completedCount = (cat.items || []).filter(isItemCompleted).length;
+                const milestones = [
+                    { c: 4, r: '가데스의 가지 ×15' },
+                    { c: 8, r: '광채의 천 ×15' },
+                    { c: 12, r: '제라즈마 광석 ×15' },
+                    { c: 16, r: '보스 코인 무료권 ×7' },
+                    { c: 20, r: '꿈의 액세서리 상자4 ×3' },
+                    { c: 25, r: '황금 꽃잎 ×3' }
+                ];
+                banner.innerHTML = `
+                    <div class="bg-indigo-50/70 border border-indigo-200 rounded-xl p-3.5 space-y-2">
+                        <div class="text-xs font-extrabold text-indigo-900">🧭 온쵸의 탐색장 과제 클리어 보상 (현재 ${completedCount}칸 달성)</div>
+                        <div class="flex flex-wrap gap-1.5">
+                            ${milestones.map(m => {
+                                const ok = completedCount >= m.c;
+                                return `<span class="px-2 py-1 rounded-lg text-[11px] font-bold border ${ok ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-600 border-indigo-200'}">${ok ? '✓ ' : ''}${m.c}칸: ${m.r}</span>`;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+                banner.classList.remove('hidden');
+                return;
+            }
+
+            banner.classList.add('hidden');
+            banner.innerHTML = '';
+        }
+
+        function renderGreenTreasureBoxDetail(cat) {
+            const container = document.getElementById('detail-items-container');
+            const boxes = (cat.items || []).filter(i => i.isGreenBox);
+            const keys = (cat.items || []).filter(i => !i.isGreenBox);
+            const openedCount = boxes.filter(isItemCompleted).length;
+            const obtainedKeys = keys.filter(isItemCompleted).length;
+
+            container.innerHTML = `
+                <div class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 shadow-2xs space-y-4">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <div>
+                            <h3 class="text-base font-extrabold text-slate-900">🟩 5×5 녹색 보물 상자 배치도</h3>
+                            <p class="text-xs text-slate-500">상자 칸을 클릭하면 개봉 완료(OPEN) 상태로 체크됩니다.</p>
+                        </div>
+                        <div class="flex items-center gap-2 text-xs font-bold">
+                            <span class="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200">개봉: ${openedCount} / ${boxes.length}</span>
+                            <span class="px-2.5 py-1 rounded-lg bg-amber-50 text-amber-800 border border-amber-200">확보 열쇠: ${obtainedKeys}개 (여유 ${Math.max(0, obtainedKeys - openedCount)}개)</span>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto pb-2">
+                        <div class="grid grid-cols-5 gap-2 min-w-[560px] bg-amber-100/60 p-3 rounded-2xl border-2 border-amber-300">
+                            ${boxes.map(box => {
+                                const opened = isItemCompleted(box);
+                                return `
+                                    <div onclick="toggleItemCheck('${box.id}')" class="relative rounded-xl border-2 p-2.5 text-center cursor-pointer transition select-none flex flex-col items-center justify-between min-h-[86px] ${opened ? 'bg-slate-100 border-slate-300 opacity-75' : 'bg-amber-50 hover:bg-white border-amber-400 shadow-2xs'}">
+                                        <button type="button" onclick="event.stopPropagation(); openItemModal('${cat.id}', '${box.id}')" class="edit-only absolute top-1 right-1 text-[10px] p-1 text-slate-400 hover:text-indigo-600 rounded" title="보상 편집">✏️</button>
+                                        <div class="w-9 h-5 rounded-xs border ${opened ? 'bg-slate-400 border-slate-500' : 'bg-emerald-600 border-yellow-300'} flex items-center justify-center text-[9px] font-extrabold text-white mt-1">
+                                            ${opened ? 'OPEN' : 'BOX'}
+                                        </div>
+                                        <div class="text-xs font-extrabold ${opened ? 'line-through text-slate-400' : 'text-slate-800'} leading-tight mt-1.5">
+                                            ${escapeHtml(box.name)}
+                                        </div>
+                                        <div class="text-[10px] text-slate-400">${escapeHtml(box.note || '')}</div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden">
+                    <div class="px-4 sm:px-5 py-3 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+                        <h3 class="text-sm font-extrabold text-slate-800">🔑 녹색 열쇠(비취 열쇠) 획득 방법 (${obtainedKeys} / ${keys.length})</h3>
+                        <button onclick="openItemModal('${cat.id}')" class="edit-only text-xs font-bold text-indigo-600 hover:underline">+ 열쇠 획득처 추가</button>
+                    </div>
+                    <div class="divide-y divide-slate-100">
+                        ${keys.map(item => renderDetailItemRow(cat, item)).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderDetailItemRow(cat, item) {
+            const allItems = cat.items || [];
+            const itemIdx = allItems.findIndex(i => i.id === item.id);
+            const canMoveUp = itemIdx > 0;
+            const canMoveDown = itemIdx >= 0 && itemIdx < allItems.length - 1;
+            const reorderBtnsHtml = `
+                <button type="button" onclick="event.stopPropagation(); moveItemInCategory('${cat.id}', '${item.id}', -1)" ${canMoveUp ? '' : 'disabled'} class="edit-only p-1.5 rounded-lg text-xs font-bold transition ${canMoveUp ? 'text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 cursor-pointer' : 'text-slate-200 cursor-not-allowed'}" title="위로 이동">↑</button>
+                <button type="button" onclick="event.stopPropagation(); moveItemInCategory('${cat.id}', '${item.id}', 1)" ${canMoveDown ? '' : 'disabled'} class="edit-only p-1.5 rounded-lg text-xs font-bold transition ${canMoveDown ? 'text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 cursor-pointer' : 'text-slate-200 cursor-not-allowed'}" title="아래로 이동">↓</button>
+            `;
+
+            const imageThumbHtml = item.imageUrl ? `
+                <button type="button" onclick="event.stopPropagation(); openImageLightbox('${escapeHtml(item.imageUrl).replace(/'/g, "\\'")}', '${escapeHtml(item.name).replace(/'/g, "\\'")}')" class="mt-2 inline-flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-indigo-50 border border-slate-200 text-xs font-semibold text-slate-700 transition">
+                    <img src="${escapeHtml(item.imageUrl)}" alt="참고" class="w-8 h-8 rounded object-cover border border-slate-300">
+                    <span>📷 참고 사진 크게 보기</span>
+                </button>
+            ` : '';
+
+            const curStep = getItemCurrentStep(item);
+            const maxStep = getItemSteps(item);
+            const done = curStep >= maxStep;
+
+            // 1. 이계 아스탈지아 동료 카드 (Lv.1~10 + Lv.1/10 효과 + 2인/4인 대화)
+            if (item.isAstraljiaBuddy || cat.id === 'astraljia') {
+                const t2Total = parseInt(item.talk2Total || 5, 10);
+                const t4Total = parseInt(item.talk4Total || 3, 10);
+                const t2Cur = parseInt(myProgress[`${item.id}_t2`] || 0, 10);
+                const t4Cur = parseInt(myProgress[`${item.id}_t4`] || 0, 10);
+
+                return `
+                    <div class="p-4 sm:p-5 space-y-3 ${done ? 'bg-emerald-50/20' : ''}">
+                        <div class="flex items-start justify-between gap-2">
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-base font-extrabold text-slate-900">${escapeHtml(item.name)}</span>
+                                    <span class="px-2 py-0.5 rounded-full text-xs font-extrabold ${done ? 'bg-emerald-100 text-emerald-700' : 'bg-indigo-100 text-indigo-700'}">
+                                        마음 Lv.${curStep} / 10
+                                    </span>
+                                </div>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2 text-xs">
+                                    <div class="px-2.5 py-1.5 rounded-lg border ${curStep >= 1 ? 'bg-indigo-50 border-indigo-200 text-indigo-900 font-semibold' : 'bg-slate-50 border-slate-200 text-slate-500'}">
+                                        <strong>Lv.1 효과:</strong> ${escapeHtml(item.minEffect || '미설정')}
+                                    </div>
+                                    <div class="px-2.5 py-1.5 rounded-lg border ${curStep >= 10 ? 'bg-emerald-50 border-emerald-300 text-emerald-900 font-semibold' : 'bg-slate-50 border-slate-200 text-slate-500'}">
+                                        <strong>Lv.10 효과:</strong> ${escapeHtml(item.maxEffect || '미설정')}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-1 shrink-0">
+                                ${reorderBtnsHtml}
+                                <button onclick="openItemModal('${cat.id}', '${item.id}')" class="edit-only p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition" title="동료 설정 편집">✏️</button>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-1.5">
+                            ${Array.from({ length: 10 }, (_, idx) => {
+                                const lv = idx + 1;
+                                const active = curStep >= lv;
+                                return `<button type="button" onclick="setItemProgress('${item.id}', ${curStep === lv ? lv - 1 : lv})" class="px-2.5 py-1 rounded-lg text-xs font-bold border transition ${active ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white hover:bg-slate-100 text-slate-600 border-slate-200'}">Lv.${lv}</button>`;
+                            }).join('')}
+                        </div>
+
+                        <div class="flex flex-wrap items-center gap-4 pt-1 text-xs">
+                            <div class="flex items-center gap-1.5">
+                                <span class="font-bold text-slate-600">💬 2인 대화 (${t2Cur}/${t2Total}):</span>
+                                ${Array.from({ length: t2Total }, (_, i) => {
+                                    const n = i + 1;
+                                    const ok = t2Cur >= n;
+                                    return `<button type="button" onclick="setSubProgress('${item.id}_t2', ${t2Cur === n ? n - 1 : n})" class="w-6 h-6 rounded-md font-bold border ${ok ? 'bg-sky-600 text-white border-sky-600' : 'bg-slate-50 text-slate-500 border-slate-200'}">${n}</button>`;
+                                }).join('')}
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                                <span class="font-bold text-slate-600">👥 4인 대화 (${t4Cur}/${t4Total}):</span>
+                                ${Array.from({ length: t4Total }, (_, i) => {
+                                    const n = i + 1;
+                                    const ok = t4Cur >= n;
+                                    return `<button type="button" onclick="setSubProgress('${item.id}_t4', ${t4Cur === n ? n - 1 : n})" class="w-6 h-6 rounded-md font-bold border ${ok ? 'bg-violet-600 text-white border-violet-600' : 'bg-slate-50 text-slate-500 border-slate-200'}">${n}</button>`;
+                                }).join('')}
+                            </div>
+                        </div>
+                        ${imageThumbHtml}
+                    </div>
+                `;
+            }
+
+            // 2. 달인의 오브 보주 (Lv.1~6 + Lv.1/Lv.6 효과 + 드랍 몬스터·좌표)
+            if (item.isMasterOrb || cat.id === 'master_orb') {
+                return `
+                    <div class="p-4 sm:p-5 space-y-2.5 ${done ? 'bg-emerald-50/20' : ''}">
+                        <div class="flex items-start justify-between gap-2">
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-sm sm:text-base font-extrabold text-slate-900">${escapeHtml(item.name)}</span>
+                                    <span class="px-2 py-0.5 rounded-full text-xs font-extrabold ${done ? 'bg-emerald-100 text-emerald-700' : 'bg-indigo-100 text-indigo-700'}">
+                                        Lv.${curStep} / 6
+                                    </span>
+                                </div>
+                                <div class="text-xs text-slate-500 mt-1">📍 드랍/좌표: <span class="font-semibold text-slate-700">${escapeHtml(item.location || '미입력')}</span></div>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2 text-xs">
+                                    <div class="px-2.5 py-1.5 rounded-lg border bg-slate-50 border-slate-200 text-slate-700">
+                                        <strong>Lv.1 효과:</strong> ${escapeHtml(item.minEffect || '미설정')}
+                                    </div>
+                                    <div class="px-2.5 py-1.5 rounded-lg border ${curStep >= 6 ? 'bg-emerald-50 border-emerald-300 text-emerald-900 font-semibold' : 'bg-slate-50 border-slate-200 text-slate-700'}">
+                                        <strong>Lv.6 효과:</strong> ${escapeHtml(item.maxEffect || '미설정')}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-1 shrink-0">
+                                ${reorderBtnsHtml}
+                                <button onclick="openItemModal('${cat.id}', '${item.id}')" class="edit-only p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition" title="보주 정보 편집">✏️</button>
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap gap-1.5">
+                            ${Array.from({ length: 6 }, (_, idx) => {
+                                const lv = idx + 1;
+                                const active = curStep >= lv;
+                                return `<button type="button" onclick="setItemProgress('${item.id}', ${curStep === lv ? lv - 1 : lv})" class="px-3 py-1 rounded-lg text-xs font-bold border transition ${active ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white hover:bg-slate-100 text-slate-600 border-slate-200'}">Lv.${lv}</button>`;
+                            }).join('')}
+                        </div>
+                        ${imageThumbHtml}
+                    </div>
+                `;
+            }
+
+            // 3. 이상한 마탑 - 이상한 카드 (Lv.1~10 개별 효과 + 총 효과량 + 금/무지개 페더칩 계산)
+            if (item.isStrangeCard) {
+                const chips = calcStrangeCardFeatherChips(curStep);
+                const totalEff = calcStrangeCardTotalEffects(item, curStep);
+                return `
+                    <div class="p-4 sm:p-5 space-y-3 ${done ? 'bg-emerald-50/20' : ''}">
+                        <div class="flex items-start justify-between gap-2">
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-base font-extrabold text-slate-900">${escapeHtml(item.name)}</span>
+                                    <span class="px-2 py-0.5 rounded-full text-xs font-extrabold bg-indigo-100 text-indigo-700">Lv.${curStep} / 10</span>
+                                </div>
+                                <div class="mt-2 p-2.5 rounded-xl bg-indigo-50 border border-indigo-200 text-xs space-y-1">
+                                    <div class="font-extrabold text-indigo-900">✨ 현재 총 효과량: ${escapeHtml(totalEff)}</div>
+                                    <div class="text-slate-700">
+                                        🪶 <strong>페더칩 소모량:</strong>
+                                        금 페더칩 <span class="font-bold text-amber-700">${chips.usedGold}장</span> (남은 필요 ${chips.remainGold}장) ·
+                                        무지개 페더칩 <span class="font-bold text-purple-700">${chips.usedRainbow}장</span> (남은 필요 ${chips.remainRainbow}장)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-1 shrink-0">
+                                <button type="button" onclick="setItemProgress('${item.id}', 0)" class="px-2 py-1 text-[11px] font-bold text-slate-500 hover:text-rose-600 bg-slate-100 rounded-lg">초기화</button>
+                                ${reorderBtnsHtml}
+                                <button onclick="openItemModal('${cat.id}', '${item.id}')" class="edit-only p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition" title="이상한 카드 편집">✏️</button>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 sm:grid-cols-5 gap-1.5">
+                            ${Array.from({ length: 10 }, (_, idx) => {
+                                const lv = idx + 1;
+                                const active = curStep >= lv;
+                                const lvText = (item.levels && item.levels[idx]) ? item.levels[idx] : `Lv.${lv}`;
+                                const chipCostText = lv <= 5 ? `금 ${lv}장` : `무지개 ${[1, 2, 3, 4, 8][lv - 6]}장`;
+                                return `
+                                    <button type="button" onclick="setItemProgress('${item.id}', ${curStep === lv ? lv - 1 : lv})" class="p-2 rounded-xl border text-left transition ${active ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'}">
+                                        <div class="flex items-center justify-between text-[10px] font-bold ${active ? 'text-indigo-100' : 'text-slate-400'}">
+                                            <span>Lv.${lv}</span>
+                                            <span>${chipCostText}</span>
+                                        </div>
+                                        <div class="text-xs font-bold truncate mt-0.5">${escapeHtml(lvText.replace(/^Lv\.\d+\s*:\s*/i, ''))}</div>
+                                    </button>
+                                `;
+                            }).join('')}
+                        </div>
+                        ${imageThumbHtml}
+                    </div>
+                `;
+            }
+
+            // 4. 가나사다이의 마음 (사념 효과 최소치 / 최대치 전용 체크)
+            if (item.isGanasadai || cat.id === 'ganasadai_heart') {
+                return `
+                    <div class="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${done ? 'bg-emerald-50/20' : ''}">
+                        <div>
+                            <div class="text-sm sm:text-base font-extrabold text-slate-900">${escapeHtml(item.name)}</div>
+                            <div class="flex flex-wrap gap-2 mt-2">
+                                <button type="button" onclick="setItemProgress('${item.id}', ${curStep >= 1 ? 0 : 1})" class="px-3 py-1.5 rounded-xl text-xs font-bold border transition ${curStep >= 1 ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-300'}">
+                                    ${curStep >= 1 ? '✓ ' : ''}최소치: ${escapeHtml(item.minEffect || '달성')}
+                                </button>
+                                <button type="button" onclick="setItemProgress('${item.id}', ${curStep >= 2 ? 1 : 2})" class="px-3 py-1.5 rounded-xl text-xs font-bold border transition ${curStep >= 2 ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-300'}">
+                                    ${curStep >= 2 ? '✓ ' : ''}최대치: ${escapeHtml(item.maxEffect || '달성')}
+                                </button>
+                            </div>
+                            ${imageThumbHtml}
+                        </div>
+                        <div class="flex items-center gap-1 shrink-0 self-end sm:self-center">
+                            ${reorderBtnsHtml}
+                            <button onclick="openItemModal('${cat.id}', '${item.id}')" class="edit-only p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition" title="사념 효과 편집">✏️</button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // 5. 마물 박사의 모험적인 실험 - 마물의 마음
+            if (item.isMonsterHeart || cat.id === 'monster_doctor') {
+                return `
+                    <div class="p-4 sm:p-5 flex items-start justify-between gap-3 ${done ? 'bg-emerald-50/25' : ''}">
+                        <label class="flex items-start gap-3 cursor-pointer flex-1 min-w-0">
+                            <input type="checkbox" ${done ? 'checked' : ''} onchange="toggleItemCheck('${item.id}')" class="mt-1 w-5 h-5 text-indigo-600 rounded-md border-slate-300 focus:ring-indigo-500">
+                            <div class="min-w-0 flex-1">
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <span class="text-sm sm:text-base font-extrabold ${done ? 'line-through text-slate-400' : 'text-slate-900'}">${escapeHtml(item.name)}</span>
+                                    <span class="px-2 py-0.5 rounded-md text-[11px] font-bold bg-rose-100 text-rose-800">💗 몬스터 하트 ×${item.heartCount || 1}</span>
+                                    <span class="px-2 py-0.5 rounded-md text-[11px] font-bold bg-indigo-100 text-indigo-800">💎 ${escapeHtml(item.crystalName || '결정')} ×${item.crystalCount || 6}</span>
+                                </div>
+                                <div class="text-xs font-semibold text-slate-700 mt-1">✨ 효과: ${escapeHtml(item.heartEffect || item.note || '')}</div>
+                                ${imageThumbHtml}
+                            </div>
+                        </label>
+                        <div class="flex items-center gap-1 shrink-0">
+                            ${reorderBtnsHtml}
+                            <button onclick="openItemModal('${cat.id}', '${item.id}')" class="edit-only p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition" title="마물의 마음 편집">✏️</button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // 6. 악세서리 전용 카드
+            if (item.isAccessory || cat.id === 'accessories') {
+                return `
+                    <div class="p-4 sm:p-5 flex items-start justify-between gap-3 ${done ? 'bg-emerald-50/25' : ''}">
+                        <label class="flex items-start gap-3 cursor-pointer flex-1 min-w-0">
+                            <input type="checkbox" ${done ? 'checked' : ''} onchange="toggleItemCheck('${item.id}')" class="mt-1 w-5 h-5 text-indigo-600 rounded-md border-slate-300 focus:ring-indigo-500">
+                            <div class="min-w-0 flex-1 space-y-1.5">
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <span class="text-sm sm:text-base font-extrabold ${done ? 'line-through text-slate-400' : 'text-slate-900'}">${escapeHtml(item.name)}</span>
+                                    ${done ? '<span class="px-2 py-0.5 rounded-full text-[11px] font-extrabold bg-emerald-100 text-emerald-700">이론치 완성</span>' : ''}
+                                </div>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-xs">
+                                    <div class="bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-200"><strong>기본 효과:</strong> ${escapeHtml(item.accBase || '-')}</div>
+                                    <div class="bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-200"><strong>스테이터스:</strong> ${escapeHtml(item.accStat || '-')}</div>
+                                    <div class="bg-amber-50/70 px-2.5 py-1.5 rounded-lg border border-amber-200 text-amber-900"><strong>합성 최대치:</strong> ${escapeHtml(item.accSynth || '-')}</div>
+                                    <div class="bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-200"><strong>획득 방법:</strong> ${escapeHtml(item.location || '-')}</div>
+                                </div>
+                                ${imageThumbHtml}
+                            </div>
+                        </label>
+                        <div class="flex items-center gap-1 shrink-0">
+                            ${reorderBtnsHtml}
+                            <button onclick="openItemModal('${cat.id}', '${item.id}')" class="edit-only p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition" title="악세서리 정보 편집">✏️</button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // 7. 모험 세미나 퀴즈 카드
+            if (item.isAdventureSeminar || cat.id === 'adventure_seminar') {
+                const quizzes = item.quizzes || [];
+                return `
+                    <div class="p-4 sm:p-5 space-y-2.5 ${done ? 'bg-emerald-50/25' : ''}">
+                        <div class="flex items-start justify-between gap-2">
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <input type="checkbox" ${done ? 'checked' : ''} onchange="toggleItemCheck('${item.id}')" class="w-5 h-5 text-indigo-600 rounded-md border-slate-300 focus:ring-indigo-500">
+                                <span class="text-sm sm:text-base font-extrabold ${done ? 'line-through text-slate-400' : 'text-slate-900'}">${escapeHtml(item.name)}</span>
+                            </label>
+                            <div class="flex items-center gap-1 shrink-0">
+                                ${reorderBtnsHtml}
+                                <button onclick="openItemModal('${cat.id}', '${item.id}')" class="edit-only p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition" title="퀴즈 편집">✏️</button>
+                            </div>
+                        </div>
+                        <div class="space-y-1.5 pl-8">
+                            ${quizzes.map((qz, idx) => `
+                                <div class="text-xs bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                                    <span class="font-semibold text-slate-700">Q${idx + 1}. ${escapeHtml(qz.q)}</span>
+                                    <span class="font-extrabold text-indigo-700 shrink-0">정답: ${escapeHtml(qz.a)}</span>
+                                </div>
+                            `).join('')}
+                            ${imageThumbHtml}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // 8. 여신의 나무 (30레벨 펼침 패널)
+            if (item.isTree || maxStep >= 10) {
+                const isExpanded = !!expandedTreeIds[item.id];
+                return `
+                    <div class="p-4 sm:p-5 space-y-2.5 ${done ? 'bg-emerald-50/20' : ''}">
+                        <div class="flex items-center justify-between gap-2">
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-sm sm:text-base font-extrabold text-slate-900">${escapeHtml(item.name)}</span>
+                                    <span class="px-2 py-0.5 rounded-full text-xs font-extrabold ${done ? 'bg-emerald-100 text-emerald-700' : 'bg-indigo-100 text-indigo-700'}">Lv.${curStep} / ${maxStep}</span>
+                                </div>
+                                <div class="text-xs text-slate-500 mt-0.5">${escapeHtml(item.location || '')} ${item.tag ? `· ${escapeHtml(item.tag)}` : ''}</div>
+                            </div>
+                            <div class="flex items-center gap-1 shrink-0">
+                                <button type="button" onclick="toggleTreeExpand('${item.id}')" class="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-bold text-slate-700 transition">
+                                    ${isExpanded ? '접기 ▲' : '레벨 선택 ▼'}
+                                </button>
+                                ${reorderBtnsHtml}
+                                <button onclick="openItemModal('${cat.id}', '${item.id}')" class="edit-only p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition" title="레벨/스탯 편집">✏️</button>
+                            </div>
+                        </div>
+                        ${isExpanded ? `
+                            <div class="grid grid-cols-2 sm:grid-cols-5 gap-1.5 pt-2">
+                                ${Array.from({ length: maxStep }, (_, idx) => {
+                                    const lv = idx + 1;
+                                    const active = curStep >= lv;
+                                    const label = (item.levels && item.levels[idx]) ? item.levels[idx] : `Lv.${lv}`;
+                                    return `<button type="button" onclick="setItemProgress('${item.id}', ${curStep === lv ? lv - 1 : lv})" class="px-2.5 py-1.5 rounded-lg text-xs font-bold border text-left truncate transition ${active ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'}">${escapeHtml(label)}</button>`;
+                                }).join('')}
+                            </div>
+                        ` : ''}
+                        ${imageThumbHtml}
+                    </div>
+                `;
+            }
+
+            // 9. 기본 1회성 또는 다단계 체크 항목 (전생 몬스터, 모험 스탬프, 제니아스, 카지노 등)
+            return `
+                <div class="p-4 sm:px-5 sm:py-3.5 flex items-start justify-between gap-3 ${done ? 'bg-emerald-50/25' : 'hover:bg-slate-50/70'} transition">
+                    <label class="flex items-start gap-3 cursor-pointer flex-1 min-w-0">
+                        <input type="checkbox" ${done ? 'checked' : ''} onchange="toggleItemCheck('${item.id}')" class="mt-0.5 w-5 h-5 text-indigo-600 rounded-md border-slate-300 focus:ring-indigo-500 shrink-0">
+                        <div class="min-w-0 flex-1">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span class="text-sm font-bold ${done ? 'line-through text-slate-400' : 'text-slate-900'}">${escapeHtml(item.name)}</span>
+                                ${item.tag ? `<span class="px-2 py-0.5 rounded-md text-[11px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-100">${escapeHtml(item.tag)}</span>` : ''}
+                            </div>
+                            ${item.location ? `<div class="text-xs text-slate-600 mt-1">📍 ${escapeHtml(item.location)}</div>` : ''}
+                            ${item.note ? `<div class="text-xs text-slate-400 mt-0.5">${escapeHtml(item.note)}</div>` : ''}
+                            ${imageThumbHtml}
+                        </div>
+                    </label>
+                    <div class="flex items-center gap-1 shrink-0">
+                        ${reorderBtnsHtml}
+                        <button onclick="openItemModal('${cat.id}', '${item.id}')" class="edit-only p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition shrink-0" title="항목 편집">
+                            ✏️
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // =========================================================================
+        // 8. 진행도 조작 및 순서 변경
+        // =========================================================================
+        function toggleItemCheck(itemId) {
+            const cat = catalog.find(c => c.id === currentCategoryId);
+            const item = cat ? (cat.items || []).find(i => i.id === itemId) : null;
+            const maxStep = item ? getItemSteps(item) : 1;
+            const cur = parseInt(myProgress[itemId] || 0, 10);
+            myProgress[itemId] = cur >= maxStep ? 0 : maxStep;
+            saveProgress();
+            renderDetailView();
+        }
+
+        function setItemProgress(itemId, step) {
+            myProgress[itemId] = Math.max(0, parseInt(step || 0, 10));
+            saveProgress();
+            renderDetailView();
+        }
+
+        function setSubProgress(subKey, val) {
+            myProgress[subKey] = Math.max(0, parseInt(val || 0, 10));
+            saveProgress();
+            renderDetailView();
+        }
+
+        function toggleTreeExpand(itemId) {
+            expandedTreeIds[itemId] = !expandedTreeIds[itemId];
+            renderDetailView();
+        }
+
+        function moveCategory(catId, delta) {
+            const idx = catalog.findIndex(c => c.id === catId);
+            const targetIdx = idx + delta;
+            if (idx < 0 || targetIdx < 0 || targetIdx >= catalog.length) return;
+            const [moved] = catalog.splice(idx, 1);
+            catalog.splice(targetIdx, 0, moved);
+            saveCatalog();
+            renderHubView();
+        }
+
+        function moveItemInCategory(catId, itemId, delta) {
+            const cat = catalog.find(c => c.id === catId);
+            if (!cat || !cat.items) return;
+            const idx = cat.items.findIndex(i => i.id === itemId);
+            const targetIdx = idx + delta;
+            if (idx < 0 || targetIdx < 0 || targetIdx >= cat.items.length) return;
+            const [moved] = cat.items.splice(idx, 1);
+            cat.items.splice(targetIdx, 0, moved);
+            saveCatalog();
+            renderDetailView();
+        }
+
+        function moveGroupInCategory(catId, groupName, delta) {
+            const cat = catalog.find(c => c.id === catId);
+            if (!cat || !cat.items) return;
+            const groupOrder = [];
+            const grouped = {};
+            cat.items.forEach(it => {
+                const g = it.group || '기본 목록';
+                if (!grouped[g]) {
+                    grouped[g] = [];
+                    groupOrder.push(g);
+                }
+                grouped[g].push(it);
+            });
+            const idx = groupOrder.indexOf(groupName);
+            const targetIdx = idx + delta;
+            if (idx < 0 || targetIdx < 0 || targetIdx >= groupOrder.length) return;
+            const [movedGroup] = groupOrder.splice(idx, 1);
+            groupOrder.splice(targetIdx, 0, movedGroup);
+            cat.items = groupOrder.flatMap(g => grouped[g]);
+            saveCatalog();
+            renderDetailView();
+        }
+
+        // =========================================================================
+        // 9. 카테고리 / 항목 / 이미지 라이트박스 / 관리 모달 제어
+        // =========================================================================
+        function openCategoryModal(catId = null) {
+            const modal = document.getElementById('category-modal');
+            const title = document.getElementById('cat-modal-title');
+            const delBtn = document.getElementById('delete-cat-btn');
+            if (catId) {
+                const cat = catalog.find(c => c.id === catId);
+                if (!cat) return;
+                title.textContent = '카테고리 수정';
+                document.getElementById('edit-cat-id').value = cat.id;
+                document.getElementById('edit-cat-icon').value = cat.icon || '📦';
+                document.getElementById('edit-cat-name').value = cat.name || '';
+                document.getElementById('edit-cat-desc').value = cat.description || '';
+                document.getElementById('edit-cat-guide').value = cat.guideUrl || '';
+                delBtn.classList.remove('hidden');
+            } else {
+                title.textContent = '새 카테고리 추가';
+                document.getElementById('edit-cat-id').value = '';
+                document.getElementById('edit-cat-icon').value = '📌';
+                document.getElementById('edit-cat-name').value = '';
+                document.getElementById('edit-cat-desc').value = '';
+                document.getElementById('edit-cat-guide').value = '';
+                delBtn.classList.add('hidden');
+            }
+            modal.classList.remove('hidden');
+        }
+
+        function closeCategoryModal() {
+            document.getElementById('category-modal').classList.add('hidden');
+        }
+
+        function saveCategoryForm(e) {
+            e.preventDefault();
+            const id = document.getElementById('edit-cat-id').value;
+            const icon = document.getElementById('edit-cat-icon').value.trim() || '📦';
+            const name = document.getElementById('edit-cat-name').value.trim();
+            const description = document.getElementById('edit-cat-desc').value.trim();
+            const guideUrl = document.getElementById('edit-cat-guide').value.trim();
+            if (!name) return;
+
+            if (id) {
+                const cat = catalog.find(c => c.id === id);
+                if (cat) {
+                    cat.icon = icon;
+                    cat.name = name;
+                    cat.description = description;
+                    cat.guideUrl = guideUrl;
+                }
+            } else {
+                catalog.push({
+                    id: `cat_${Date.now()}`,
+                    name,
+                    icon,
+                    description,
+                    guideUrl,
+                    items: []
+                });
+            }
+            saveCatalog();
+            closeCategoryModal();
+            if (currentCategoryId) renderDetailView();
+            else renderHubView();
+            showToast('카테고리가 저장되었습니다.');
+        }
+
+        function deleteCurrentCategory() {
+            const id = document.getElementById('edit-cat-id').value;
+            if (!id) return;
+            catalog = catalog.filter(c => c.id !== id);
+            saveCatalog();
+            closeCategoryModal();
+            goHome();
+            showToast('카테고리가 삭제되었습니다.');
+        }
+
+        function openItemModal(defaultCatId = null, itemId = null) {
+            const modal = document.getElementById('item-modal');
+            const catSelect = document.getElementById('edit-item-cat');
+            catSelect.innerHTML = catalog.map(c => `<option value="${c.id}">${escapeHtml(c.icon)} ${escapeHtml(c.name)}</option>`).join('');
+
+            const targetCatId = defaultCatId || currentCategoryId || (catalog[0] && catalog[0].id);
+            if (targetCatId) catSelect.value = targetCatId;
+
+            const delBtn = document.getElementById('delete-item-btn');
+            currentModalImageData = '';
+            document.getElementById('edit-item-image-file').value = '';
+            document.getElementById('edit-item-image-url').value = '';
+            updateItemImagePreview('');
+
+            if (itemId && targetCatId) {
+                const cat = catalog.find(c => c.id === targetCatId);
+                const item = cat ? (cat.items || []).find(i => i.id === itemId) : null;
+                if (!item) return;
+
+                document.getElementById('item-modal-title').textContent = '항목 수정';
+                document.getElementById('edit-item-id').value = item.id;
+                document.getElementById('edit-item-group').value = item.group || '';
+                document.getElementById('edit-item-name').value = item.name || '';
+                document.getElementById('edit-item-loc').value = item.location || '';
+                document.getElementById('edit-item-note').value = item.note || '';
+                document.getElementById('edit-item-tag').value = item.tag || '';
+
+                let stepMode = String(item.steps || 1);
+                if (item.isStrangeCard) stepMode = '10_card';
+                else if (item.isAstraljiaBuddy) stepMode = '10_buddy';
+                else if (item.isAccessory) stepMode = 'accessory';
+                else if (item.isMonsterHeart) stepMode = 'monster_heart';
+                else if (item.isAdventureSeminar) stepMode = 'seminar';
+                document.getElementById('edit-item-steps').value = stepMode;
+
+                document.getElementById('edit-item-min-effect').value = item.minEffect || '';
+                document.getElementById('edit-item-max-effect').value = item.maxEffect || '';
+                document.getElementById('edit-buddy-talk2').value = item.talk2Total ?? 5;
+                document.getElementById('edit-buddy-talk4').value = item.talk4Total ?? 3;
+                document.getElementById('edit-acc-base').value = item.accBase || '';
+                document.getElementById('edit-acc-stat').value = item.accStat || '';
+                document.getElementById('edit-acc-synth').value = item.accSynth || '';
+                document.getElementById('edit-heart-count').value = item.heartCount ?? 1;
+                document.getElementById('edit-crystal-name').value = item.crystalName || '마물의 마음의 결정 1';
+                document.getElementById('edit-crystal-count').value = item.crystalCount ?? 6;
+                document.getElementById('edit-heart-effect').value = item.heartEffect || '';
+
+                if (item.imageUrl) {
+                    currentModalImageData = item.imageUrl;
+                    if (!item.imageUrl.startsWith('data:')) {
+                        document.getElementById('edit-item-image-url').value = item.imageUrl;
+                    }
+                    updateItemImagePreview(item.imageUrl);
+                }
+
+                toggleItemTypeFields(item);
+                delBtn.classList.remove('hidden');
+            } else {
+                document.getElementById('item-modal-title').textContent = '새 수집 항목 추가';
+                document.getElementById('edit-item-id').value = '';
+                document.getElementById('edit-item-group').value = '';
+                document.getElementById('edit-item-name').value = '';
+                document.getElementById('edit-item-loc').value = '';
+                document.getElementById('edit-item-note').value = '';
+                document.getElementById('edit-item-tag').value = '';
+                document.getElementById('edit-item-min-effect').value = '';
+                document.getElementById('edit-item-max-effect').value = '';
+                document.getElementById('edit-acc-base').value = '';
+                document.getElementById('edit-acc-stat').value = '';
+                document.getElementById('edit-acc-synth').value = '';
+                document.getElementById('edit-heart-effect').value = '';
+                onItemCategorySelectChange();
+                delBtn.classList.add('hidden');
+            }
+
+            modal.classList.remove('hidden');
+        }
+
+        function onItemCategorySelectChange() {
+            const catId = document.getElementById('edit-item-cat').value;
+            const stepsSel = document.getElementById('edit-item-steps');
+            if (!document.getElementById('edit-item-id').value) {
+                if (catId === 'astraljia') stepsSel.value = '10_buddy';
+                else if (catId === 'master_orb') stepsSel.value = '6';
+                else if (catId === 'ganasadai_heart') stepsSel.value = '2';
+                else if (catId === 'accessories') stepsSel.value = 'accessory';
+                else if (catId === 'monster_doctor') stepsSel.value = 'monster_heart';
+                else if (catId === 'adventure_seminar') stepsSel.value = 'seminar';
+                else if (catId === 'goddess_tree') stepsSel.value = '30';
+                else stepsSel.value = '1';
+            }
+            toggleItemTypeFields();
+        }
+
+        function toggleItemTypeFields(existingItem = null) {
+            const mode = document.getElementById('edit-item-steps').value;
+            const minmaxEl = document.getElementById('special-minmax-fields');
+            const buddyTalkEl = document.getElementById('buddy-talk-fields');
+            const accEl = document.getElementById('special-accessory-fields');
+            const heartEl = document.getElementById('special-heart-fields');
+            const treeEl = document.getElementById('tree-levels-editor');
+            const semEl = document.getElementById('seminar-quiz-editor');
+
+            minmaxEl.classList.add('hidden');
+            buddyTalkEl.classList.add('hidden');
+            accEl.classList.add('hidden');
+            heartEl.classList.add('hidden');
+            treeEl.classList.add('hidden');
+            semEl.classList.add('hidden');
+
+            if (mode === '2' || mode === '6' || mode === '10_buddy') {
+                minmaxEl.classList.remove('hidden');
+                if (mode === '10_buddy') buddyTalkEl.classList.remove('hidden');
+            } else if (mode === 'accessory') {
+                accEl.classList.remove('hidden');
+            } else if (mode === 'monster_heart') {
+                heartEl.classList.remove('hidden');
+            } else if (mode === '10_card' || mode === '30') {
+                const count = mode === '10_card' ? 10 : 30;
+                const inputsDiv = document.getElementById('tree-levels-inputs');
+                inputsDiv.innerHTML = Array.from({ length: count }, (_, i) => {
+                    const val = (existingItem && existingItem.levels && existingItem.levels[i]) ? existingItem.levels[i] : '';
+                    return `<input type="text" id="tree-lv-input-${i + 1}" value="${escapeHtml(val)}" placeholder="Lv.${i + 1} 효과 (예: 공격력 +2)" class="px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-xs">`;
+                }).join('');
+                treeEl.classList.remove('hidden');
+            } else if (mode === 'seminar') {
+                const qInputs = document.getElementById('seminar-quiz-inputs');
+                qInputs.innerHTML = Array.from({ length: 5 }, (_, i) => {
+                    const qz = (existingItem && existingItem.quizzes && existingItem.quizzes[i]) ? existingItem.quizzes[i] : { q: '', a: '' };
+                    return `
+                        <div class="grid grid-cols-2 gap-1.5">
+                            <input type="text" id="sem-q-${i + 1}" value="${escapeHtml(qz.q)}" placeholder="문제 ${i + 1}" class="px-2 py-1.5 bg-white border border-slate-300 rounded-lg text-xs">
+                            <input type="text" id="sem-a-${i + 1}" value="${escapeHtml(qz.a)}" placeholder="정답 ${i + 1}" class="px-2 py-1.5 bg-white border border-slate-300 rounded-lg text-xs">
+                        </div>
+                    `;
+                }).join('');
+                semEl.classList.remove('hidden');
+            }
+        }
+
+        function handleItemImageUpload(e) {
+            const file = e.target.files && e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                const img = new Image();
+                img.onload = function() {
+                    const maxDim = 960;
+                    let w = img.width;
+                    let h = img.height;
+                    if (w > maxDim || h > maxDim) {
+                        if (w > h) {
+                            h = Math.round((h * maxDim) / w);
+                            w = maxDim;
+                        } else {
+                            w = Math.round((w * maxDim) / h);
+                            h = maxDim;
+                        }
+                    }
+                    const canvas = document.createElement('canvas');
+                    canvas.width = w;
+                    canvas.height = h;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, w, h);
+                    const compressed = canvas.toDataURL('image/jpeg', 0.8);
+                    currentModalImageData = compressed;
+                    document.getElementById('edit-item-image-url').value = '';
+                    updateItemImagePreview(compressed);
+                };
+                img.src = ev.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function handleItemImageUrlInput(e) {
+            const url = e.target.value.trim();
+            currentModalImageData = url;
+            updateItemImagePreview(url);
+        }
+
+        function clearItemImage() {
+            currentModalImageData = '';
+            document.getElementById('edit-item-image-file').value = '';
+            document.getElementById('edit-item-image-url').value = '';
+            updateItemImagePreview('');
+        }
+
+        function updateItemImagePreview(src) {
+            const wrap = document.getElementById('item-image-preview-wrap');
+            const img = document.getElementById('item-image-preview');
+            const clearBtn = document.getElementById('clear-item-image-btn');
+            if (src) {
+                img.src = src;
+                wrap.classList.remove('hidden');
+                clearBtn.classList.remove('hidden');
+            } else {
+                img.src = '';
+                wrap.classList.add('hidden');
+                clearBtn.classList.add('hidden');
+            }
+        }
+
+        function closeItemModal() {
+            document.getElementById('item-modal').classList.add('hidden');
+        }
+
+        function saveItemForm(e) {
+            e.preventDefault();
+            const itemId = document.getElementById('edit-item-id').value;
+            const catId = document.getElementById('edit-item-cat').value;
+            const group = document.getElementById('edit-item-group').value.trim();
+            const name = document.getElementById('edit-item-name').value.trim();
+            const mode = document.getElementById('edit-item-steps').value;
+            const location = document.getElementById('edit-item-loc').value.trim();
+            const note = document.getElementById('edit-item-note').value.trim();
+            const tag = document.getElementById('edit-item-tag').value.trim();
+            if (!name || !catId) return;
+
+            const cat = catalog.find(c => c.id === catId);
+            if (!cat) return;
+            if (!cat.items) cat.items = [];
+
+            let steps = 1;
+            if (mode === '10_card' || mode === '10_buddy') steps = 10;
+            else if (['2', '3', '5', '6', '30'].includes(mode)) steps = parseInt(mode, 10);
+
+            const itemData = {
+                id: itemId || `item_${Date.now()}`,
+                group,
+                name,
+                steps,
+                location,
+                note,
+                tag,
+                imageUrl: currentModalImageData || '',
+                isMasterOrb: mode === '6',
+                isStrangeCard: mode === '10_card',
+                isAstraljiaBuddy: mode === '10_buddy',
+                isTree: mode === '30',
+                isGanasadai: mode === '2',
+                isAccessory: mode === 'accessory',
+                isMonsterHeart: mode === 'monster_heart',
+                isAdventureSeminar: mode === 'seminar'
+            };
+
+            if (mode === '2' || mode === '6' || mode === '10_buddy') {
+                itemData.minEffect = document.getElementById('edit-item-min-effect').value.trim();
+                itemData.maxEffect = document.getElementById('edit-item-max-effect').value.trim();
+                if (mode === '10_buddy') {
+                    itemData.talk2Total = parseInt(document.getElementById('edit-buddy-talk2').value || 5, 10);
+                    itemData.talk4Total = parseInt(document.getElementById('edit-buddy-talk4').value || 3, 10);
+                }
+            } else if (mode === 'accessory') {
+                itemData.accBase = document.getElementById('edit-acc-base').value.trim();
+                itemData.accStat = document.getElementById('edit-acc-stat').value.trim();
+                itemData.accSynth = document.getElementById('edit-acc-synth').value.trim();
+            } else if (mode === 'monster_heart') {
+                itemData.heartCount = parseInt(document.getElementById('edit-heart-count').value || 1, 10);
+                itemData.crystalName = document.getElementById('edit-crystal-name').value.trim();
+                itemData.crystalCount = parseInt(document.getElementById('edit-crystal-count').value || 6, 10);
+                itemData.heartEffect = document.getElementById('edit-heart-effect').value.trim();
+            } else if (mode === '10_card' || mode === '30') {
+                const count = mode === '10_card' ? 10 : 30;
+                const levels = [];
+                for (let i = 1; i <= count; i++) {
+                    const inp = document.getElementById(`tree-lv-input-${i}`);
+                    levels.push(inp ? inp.value.trim() : '');
+                }
+                itemData.levels = levels;
+            } else if (mode === 'seminar') {
+                const quizzes = [];
+                for (let i = 1; i <= 5; i++) {
+                    const q = (document.getElementById(`sem-q-${i}`)?.value || '').trim();
+                    const a = (document.getElementById(`sem-a-${i}`)?.value || '').trim();
+                    if (q || a) quizzes.push({ q, a });
+                }
+                itemData.quizzes = quizzes;
+            }
+
+            if (itemId) {
+                catalog.forEach(c => {
+                    if (c.id !== catId && c.items) {
+                        c.items = c.items.filter(i => i.id !== itemId);
+                    }
+                });
+                const idx = cat.items.findIndex(i => i.id === itemId);
+                if (idx >= 0) {
+                    itemData.isGreenBox = !!cat.items[idx].isGreenBox;
+                    itemData.boxIndex = cat.items[idx].boxIndex;
+                    cat.items[idx] = itemData;
+                } else {
+                    cat.items.push(itemData);
+                }
+            } else {
+                cat.items.push(itemData);
+            }
+
+            saveCatalog();
+            closeItemModal();
+            if (currentCategoryId) renderDetailView();
+            else renderHubView();
+            showToast('항목이 저장되었습니다.');
+        }
+
+        function deleteCurrentItem() {
+            const itemId = document.getElementById('edit-item-id').value;
+            if (!itemId) return;
+            catalog.forEach(c => {
+                if (c.items) c.items = c.items.filter(i => i.id !== itemId);
+            });
+            delete myProgress[itemId];
+            saveCatalog();
+            saveProgress();
+            closeItemModal();
+            if (currentCategoryId) renderDetailView();
+            else renderHubView();
+            showToast('항목이 삭제되었습니다.');
+        }
+
+        function openImageLightbox(src, title = '참고 이미지') {
+            if (!src) return;
+            document.getElementById('lightbox-image').src = src;
+            document.getElementById('lightbox-title').textContent = title;
+            document.getElementById('image-lightbox-modal').classList.remove('hidden');
+        }
+
+        function closeImageLightbox() {
+            document.getElementById('image-lightbox-modal').classList.add('hidden');
+            document.getElementById('lightbox-image').src = '';
+        }
+
+        function openManageModal() {
+            document.getElementById('manage-modal').classList.remove('hidden');
+        }
+
+        function closeManageModal() {
+            document.getElementById('manage-modal').classList.add('hidden');
+        }
+
+        function exportDataJson() {
+            const payload = {
+                version: 4,
+                exportedAt: new Date().toISOString(),
+                catalog,
+                progress: myProgress
+            };
+            const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `dq10_tracker_backup_${new Date().toISOString().slice(0, 10)}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('백업 JSON 파일이 다운로드되었습니다.');
+        }
+
+        function importDataJson(e) {
+            const file = e.target.files && e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                try {
+                    const parsed = JSON.parse(ev.target.result);
+                    if (parsed.catalog && Array.isArray(parsed.catalog)) {
+                        catalog = parsed.catalog;
+                        saveCatalog();
+                    }
+                    if (parsed.progress && typeof parsed.progress === 'object') {
+                        myProgress = parsed.progress;
+                        saveProgress();
+                    }
+                    closeManageModal();
+                    if (currentCategoryId) renderDetailView();
+                    else renderHubView();
+                    showToast('백업 데이터를 성공적으로 불러왔습니다.');
+                } catch (err) {
+                    showToast('올바른 JSON 백업 파일이 아닙니다.');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function resetProgressOnly() {
+            myProgress = {};
+            saveProgress();
+            closeManageModal();
+            if (currentCategoryId) renderDetailView();
+            else renderHubView();
+            showToast('모든 체크 진행도가 초기화되었습니다.');
+        }
+
+        function resetCatalogToDefault() {
+            catalog = JSON.parse(JSON.stringify(DEFAULT_CATALOG));
+            saveCatalog();
+            closeManageModal();
+            goHome();
+            showToast('카테고리 및 기본 항목 목록이 복원되었습니다.');
+        }
+
+        // 초기 실행
+        window.addEventListener('DOMContentLoaded', () => {
+            initState();
+            renderHubView();
+        });
+    </script>
+</body>
+</html>
