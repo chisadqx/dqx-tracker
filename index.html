@@ -2818,6 +2818,44 @@
                     </div>
                 `;
                 specialBanner.classList.remove('hidden');
+                } else if (cat.id === 'adventure_seminar') {
+                const items = cat.items || [];
+                const completedCnt = items.filter(it => isItemFullyCompleted(cat, it)).length;
+                const milestones = Array.isArray(cat.seminarMilestoneRewards) ? [...cat.seminarMilestoneRewards].sort((a, b) => (parseInt(a.count, 10) || 0) - (parseInt(b.count, 10) || 0)) : [];
+
+                specialBanner.className = 'rounded-xl p-4 text-sm border bg-sky-50/80 border-sky-200 text-sky-950 space-y-2.5';
+                specialBanner.innerHTML = `
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <span class="font-extrabold text-sky-900">🎓 모험 세미나 — 달성 개수별 보상 (${completedCnt} / ${items.length}개 달성)</span>
+                        ${cat.completeReward ? `<span class="text-xs font-bold text-sky-800">🎁 전체 컴플리트: ${escapeHtml(cat.completeReward)}</span>` : ''}
+                    </div>
+                    ${milestones.length > 0 ? `
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
+                            ${milestones.map(m => {
+                                const targetCnt = parseInt(m.count, 10) || 0;
+                                const ok = targetCnt > 0 && completedCnt >= targetCnt;
+                                return `
+                                    <div class="p-2.5 rounded-xl border transition ${ok ? 'bg-emerald-50/90 border-emerald-300 shadow-2xs' : 'bg-white/90 border-sky-200/80'}">
+                                        <div class="flex items-center justify-between text-xs font-extrabold ${ok ? 'text-emerald-800' : 'text-sky-900'}">
+                                            <span>${targetCnt}개 달성 보상</span>
+                                            <span>${ok ? '✓ 달성' : `${Math.max(0, targetCnt - completedCnt)}개 남음`}</span>
+                                        </div>
+                                        <div class="text-xs font-semibold mt-1 leading-snug ${ok ? 'text-slate-900' : 'text-slate-700'}">
+                                            ${escapeHtml(m.reward || '보상 미입력')}
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    ` : `
+                        <div class="text-xs text-sky-800">
+                            카테고리 수정(✏️)에서 달성 개수별 보상을 추가하면 이곳에 표시됩니다.
+                        </div>
+                    `}
+                `;
+                specialBanner.classList.remove('hidden');
+
+            } else if (cat.completeReward) {
             } else if (cat.completeReward) {
                 specialBanner.className = 'rounded-xl p-3.5 text-sm border bg-amber-50/70 border-amber-200 text-amber-950 flex items-center justify-between gap-2';
                 specialBanner.innerHTML = `
