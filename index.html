@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>드래곤 퀘스트 10 콘텐츠 진행도 트래커</title>
-    <script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=UjTwbaLil2mGs987EjpOq5TWMrm2ZMB-w8FyZvZUBv1z8sBPckTgQRt13XA_FbjoaguTibSEdMpZWc4jDwpz1fWY59WOcPQp7Cky2cnEmU51jrgyc5sUGN_xOClK2Ph7qHYovtXXA8VY7YAM-FWC36-O-ZZFWOMgghAZr52WuXn70PxhMJF2-sKS-GZupyFdgizljRFShhimx_DC2wis6kzDr1UtGipY0fk2xSlqfsK4_HORni0RHYo7wjZowbHw2fOp1_7BcYV5J4Bm7LLcTE1D75OjUEWgfjSrMlPCnkvCJUgFpqDBGIgsfW6jGRlA" charset="UTF-8"></script><script src="https://cdn.tailwindcss.com"></script>
+    <script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=Tb7qV8puTU0k0UcG6v4k_b3B24agaecmH8W7DLdQh98sK0dqvlzhKPhTIXRWJztD4Hata4sTqbmGK5Z40IYsKBdBPFlZw-qPON8zGs7PVLoy7tADs8hSS9KhmBLE1mGiAN0QqyRl4cxTkuevnQP9PlwUUrnLIDCOYKm4rXT9aTHO1l0F1CNnvNezw6EH1hjhZjPJ5m-hqIbX7ZS6XxEj6WIeznHRJhljgrevuTxxvrjiYNFLi5UJj5DG7WHtsH0dh8rnqyOchJ3lDsQ0WUwfGVQ7JynLdK9Ol-OwJnCePCtKq5blARraPm0CgJEaHS8OEs6JH8xnKs6ADxl8deHf9A" charset="UTF-8"></script><script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=UjTwbaLil2mGs987EjpOq5TWMrm2ZMB-w8FyZvZUBv1z8sBPckTgQRt13XA_FbjoaguTibSEdMpZWc4jDwpz1fWY59WOcPQp7Cky2cnEmU51jrgyc5sUGN_xOClK2Ph7qHYovtXXA8VY7YAM-FWC36-O-ZZFWOMgghAZr52WuXn70PxhMJF2-sKS-GZupyFdgizljRFShhimx_DC2wis6kzDr1UtGipY0fk2xSlqfsK4_HORni0RHYo7wjZowbHw2fOp1_7BcYV5J4Bm7LLcTE1D75OjUEWgfjSrMlPCnkvCJUgFpqDBGIgsfW6jGRlA" charset="UTF-8"></script><script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body {
@@ -4556,10 +4556,20 @@
                 completeReward = document.getElementById('edit-item-complete-reward').value.trim();
             }
 
-            // 기존 항목 수정인 경우 원래 카테고리에서 찾아 제거 후 대상 카테고리에 반영
+            // 기존 항목 수정인 경우 원래 항목의 특수 메타데이터(5x5 그리드 좌표 등)와 위치 보존
+            let existingItemBackup = null;
+            let originalIndexInTargetCat = -1;
+
             if (itemId) {
                 catalog.forEach(c => {
-                    c.items = (c.items || []).filter(i => i.id !== itemId);
+                    const foundIdx = (c.items || []).findIndex(i => i.id === itemId);
+                    if (foundIdx !== -1) {
+                        existingItemBackup = c.items[foundIdx];
+                        if (c.id === targetCatId) {
+                            originalIndexInTargetCat = foundIdx;
+                        }
+                        c.items.splice(foundIdx, 1);
+                    }
                 });
             }
 
@@ -4579,6 +4589,16 @@
                 stepRewards,
                 completeReward
             };
+
+            // 녹색 보물 상자 5×5 배치도 속성 유지
+            if (existingItemBackup && existingItemBackup.isGreenChest) {
+                newItemObj.isGreenChest = true;
+                newItemObj.gridRow = existingItemBackup.gridRow;
+                newItemObj.gridCol = existingItemBackup.gridCol;
+                if (existingItemBackup.subLabel !== undefined) {
+                    newItemObj.subLabel = existingItemBackup.subLabel;
+                }
+            }
 
             if (isSemMode) {
                 newItemObj.isAdventureSeminar = true;
@@ -4645,7 +4665,11 @@
                 newItemObj.levels = levels;
             }
 
-            targetCat.items.push(newItemObj);
+            if (originalIndexInTargetCat >= 0 && originalIndexInTargetCat <= targetCat.items.length) {
+                targetCat.items.splice(originalIndexInTargetCat, 0, newItemObj);
+            } else {
+                targetCat.items.push(newItemObj);
+            }
             saveCatalogToStorage();
             closeItemModal();
             renderCurrentView();
