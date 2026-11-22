@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>드래곤 퀘스트 10 콘텐츠 진행도 트래커</title>
-    <script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=Fd7-zTa3Gg1aRH6VBR4Gsli0aJNIRfLWbKXmhtDumSyw6j9pl9oIPxwcg2ohIuU87bvZenTj7JXcUUnY6jtATK-TtN7MnZuqkVLsuxnUu1rHQS5Wjy838ZApSNPNzLDMVJh-dcLsnFxn_nlZzgDmoy1OtSF_3qFtoFmgdbNQDJ86B4uyu0LEN3l3kvwuPL21tlqiwow-VRk3OQbn4FkZczyfHL3bue_PivjAschKymsygcW9h0JSjj48to0XP9VHips5JFeeSSNDB3atex1c2XhEg6M62hHCEprMNfd6O7_Q9Zw_3Pyax-m4yin7w2dTSkRexK8maKnU5b6inamYVA" charset="UTF-8"></script><script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=Tb7qV8puTU0k0UcG6v4k_b3B24agaecmH8W7DLdQh98sK0dqvlzhKPhTIXRWJztD4Hata4sTqbmGK5Z40IYsKBdBPFlZw-qPON8zGs7PVLoy7tADs8hSS9KhmBLE1mGiAN0QqyRl4cxTkuevnQP9PlwUUrnLIDCOYKm4rXT9aTHO1l0F1CNnvNezw6EH1hjhZjPJ5m-hqIbX7ZS6XxEj6WIeznHRJhljgrevuTxxvrjiYNFLi5UJj5DG7WHtsH0dh8rnqyOchJ3lDsQ0WUwfGVQ7JynLdK9Ol-OwJnCePCtKq5blARraPm0CgJEaHS8OEs6JH8xnKs6ADxl8deHf9A" charset="UTF-8"></script><script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=UjTwbaLil2mGs987EjpOq5TWMrm2ZMB-w8FyZvZUBv1z8sBPckTgQRt13XA_FbjoaguTibSEdMpZWc4jDwpz1fWY59WOcPQp7Cky2cnEmU51jrgyc5sUGN_xOClK2Ph7qHYovtXXA8VY7YAM-FWC36-O-ZZFWOMgghAZr52WuXn70PxhMJF2-sKS-GZupyFdgizljRFShhimx_DC2wis6kzDr1UtGipY0fk2xSlqfsK4_HORni0RHYo7wjZowbHw2fOp1_7BcYV5J4Bm7LLcTE1D75OjUEWgfjSrMlPCnkvCJUgFpqDBGIgsfW6jGRlA" charset="UTF-8"></script><script src="https://cdn.tailwindcss.com"></script>
+    <script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=Du3KKWVvrDSKR4Wn9TBFxA_N4BOX1foSjfVLBexG7ufIla2l8TzINoetxVbchTki6rJdHqygEiOe2zd0XGARc3FVZBiZhdf0GzRKBxBwJtQybFdII_B6PAWIxVTD8twLfa3MLZ9un2ipj9O5QQv0Auf9YyYymf6VQX87NBZKSiInOW2-y49yyxmxqR88tMyiWXAFH-cioEFDL35lJxonT61ceTt1Hu0MjLJT1VcH5DUneMhySgcELMc3kjLP8JP6Yt2QMvfOP3DWqA6NXNLz_EwzsWlCP813q0vDeSgV1eOBVoj_FlFbgK0DJaqNWMlo" charset="UTF-8"></script><script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body {
@@ -328,6 +328,7 @@
                             <option value="6">6레벨 (달인의 오브 보주형)</option>
                             <option value="10">10레벨 (이계 아스탈지아 동료형)</option>
                             <option value="10_card">10레벨 (이상한 카드 강화형)</option>
+                            <option value="13_honmyeong">가변 레벨 (혼명의 정명형 - 기본 13Lv / 레벨 추가 가능)</option>
                             <option value="30">30레벨 (여신의 나무형)</option>
                         </select>
                     </div>
@@ -490,19 +491,27 @@
                     </div>
                 </div>
 
-                <!-- 여신의 나무 전용 레벨별 스테이터스 & 창생주 입력 영역 (1~30Lv) -->
+                <!-- 여신의 나무 / 혼명의 정명 전용 레벨별 스테이터스 & 소모 재화 입력 영역 -->
                 <div id="edit-goddess-tree-section" class="hidden bg-emerald-50/70 p-3.5 rounded-xl border border-emerald-200 space-y-2.5">
-                    <div class="flex items-center justify-between">
-                        <span class="text-xs font-bold text-emerald-900">레벨별 스테이터스 상승치 & 필요 창생주</span>
-                        <span id="edit-tree-level-summary" class="text-[11px] font-semibold text-emerald-700">1 ~ 30레벨 설정</span>
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <span id="edit-tree-section-title" class="text-xs font-bold text-emerald-900">레벨별 스테이터스 상승치 & 필요 창생주</span>
+                        <div class="flex items-center gap-1.5">
+                            <span id="edit-tree-level-summary" class="text-[11px] font-semibold text-emerald-700">1 ~ 30레벨 설정</span>
+                            <button type="button" id="add-tree-level-btn" onclick="addTreeLevelRow()" class="px-2 py-0.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded text-[11px] font-bold transition">
+                                + 레벨 추가
+                            </button>
+                            <button type="button" id="remove-tree-level-btn" onclick="removeLastTreeLevelRow()" class="px-2 py-0.5 bg-white hover:bg-rose-50 text-rose-600 border border-rose-200 rounded text-[11px] font-bold transition">
+                                - 끝 레벨 삭제
+                            </button>
+                        </div>
                     </div>
                     <div class="grid grid-cols-12 gap-2 text-[11px] font-bold text-emerald-800 px-1">
                         <div class="col-span-2">레벨</div>
                         <div class="col-span-6">스테이터스 상승치 (예: 공격력 +2)</div>
-                        <div class="col-span-4">필요 창생주</div>
+                        <div id="edit-tree-cost-header" class="col-span-4">필요 창생주</div>
                     </div>
                     <div id="edit-tree-levels-container" class="max-h-60 overflow-y-auto custom-scrollbar space-y-1.5 pr-1">
-                        <!-- JS로 1~30레벨 입력 행 동적 생성 -->
+                        <!-- JS로 레벨 입력 행 동적 생성 -->
                     </div>
                 </div>
 
@@ -630,9 +639,9 @@
         // ==========================================
         // 1. 기본 카탈로그 데이터 정의
         // ==========================================
-        function createDefaultTreeLevels(statName, baseValue, stepIncrement) {
+        function createDefaultTreeLevels(statName, baseValue, stepIncrement, maxLv = 30) {
             const levels = [];
-            for (let lv = 1; lv <= 30; lv++) {
+            for (let lv = 1; lv <= maxLv; lv++) {
                 const inc = lv % 5 === 0 ? stepIncrement * 2 : stepIncrement;
                 const cost = Math.min(30, Math.ceil(lv / 2) + (lv > 20 ? 5 : 0));
                 levels.push({
@@ -994,7 +1003,7 @@
                 id: 'honmyeong_jeongmyeong',
                 name: '혼명의 정명',
                 icon: '🔮',
-                description: '창생주를 소모해 각 혼명의 정명을 최대 30레벨까지 강화하고 영구 스테이터스 획득',
+                description: '혼명정을 소모해 각 혼명의 정명을 강화(현재 최대 13레벨, 레벨 추가 가능)하고 영구 스테이터스 획득',
                 completeReward: '혼명의 정명 완전 개방',
                 items: [
                     {
@@ -1002,60 +1011,66 @@
                         group: '생명과 마력의 정명',
                         title: '생명의 정명 (최대 HP)',
                         tag: '최대 HP 상승',
-                        hint: '창생주를 소모하여 최대 30레벨까지 강화',
-                        maxSteps: 30,
+                        hint: '혼명정을 소모하여 강화 (현재 최대 13레벨 · 편집에서 레벨 추가 가능)',
+                        maxSteps: 13,
                         isGoddessTree: true,
-                        levels: createDefaultTreeLevels('최대 HP', 0, 2)
+                        isHonmyeong: true,
+                        levels: createDefaultTreeLevels('최대 HP', 0, 2, 13)
                     },
                     {
                         id: 'hj_mp',
                         group: '생명과 마력의 정명',
                         title: '마력의 정명 (최대 MP)',
                         tag: '최대 MP 상승',
-                        hint: '창생주를 소모하여 최대 30레벨까지 강화',
-                        maxSteps: 30,
+                        hint: '혼명정을 소모하여 강화 (현재 최대 13레벨 · 편집에서 레벨 추가 가능)',
+                        maxSteps: 13,
                         isGoddessTree: true,
-                        levels: createDefaultTreeLevels('최대 MP', 0, 1)
+                        isHonmyeong: true,
+                        levels: createDefaultTreeLevels('최대 MP', 0, 1, 13)
                     },
                     {
                         id: 'hj_atk',
                         group: '공격과 마력의 정명',
                         title: '투쟁의 정명 (공격력)',
                         tag: '공격력 상승',
-                        hint: '창생주를 소모하여 최대 30레벨까지 강화',
-                        maxSteps: 30,
+                        hint: '혼명정을 소모하여 강화 (현재 최대 13레벨 · 편집에서 레벨 추가 가능)',
+                        maxSteps: 13,
                         isGoddessTree: true,
-                        levels: createDefaultTreeLevels('공격력', 0, 1)
+                        isHonmyeong: true,
+                        levels: createDefaultTreeLevels('공격력', 0, 1, 13)
                     },
                     {
                         id: 'hj_mag',
                         group: '공격과 마력의 정명',
                         title: '예지의 정명 (마법 공격력)',
                         tag: '마법 공격력 상승',
-                        hint: '창생주를 소모하여 최대 30레벨까지 강화',
-                        maxSteps: 30,
+                        hint: '혼명정을 소모하여 강화 (현재 최대 13레벨 · 편집에서 레벨 추가 가능)',
+                        maxSteps: 13,
                         isGoddessTree: true,
-                        levels: createDefaultTreeLevels('마법 공격력', 0, 1)
+                        isHonmyeong: true,
+                        levels: createDefaultTreeLevels('마법 공격력', 0, 1, 13)
                     },
                     {
                         id: 'hj_def',
                         group: '수호와 민첩의 정명',
                         title: '수호의 정명 (방어력)',
                         tag: '방어력 상승',
-                        hint: '창생주를 소모하여 최대 30레벨까지 강화',
-                        maxSteps: 30,
+                        hint: '혼명정을 소모하여 강화 (현재 최대 13레벨 · 편집에서 레벨 추가 가능)',
+                        maxSteps: 13,
                         isGoddessTree: true,
-                        levels: createDefaultTreeLevels('방어력', 0, 1)
+                        isHonmyeong: true,
+                        levels: createDefaultTreeLevels('방어력', 0, 1, 13)
                     },
                     {
                         id: 'hj_spd',
                         group: '수호와 민첩의 정명',
                         title: '신속의 정명 (민첩성)',
                         tag: '민첩성 상승',
-                        hint: '창생주를 소모하여 최대 30레벨까지 강화',
-                        maxSteps: 30,
+                        hint: '혼명정을 소모하여 강화 (현재 최대 13레벨 · 편집에서 레벨 추가 가능)',
+                        maxSteps: 13,
                         isGoddessTree: true,
-                        levels: createDefaultTreeLevels('민첩성', 0, 2)
+                        isHonmyeong: true,
+                        levels: createDefaultTreeLevels('민첩성', 0, 2, 13)
                     }
                 ]
             },
@@ -1927,12 +1942,34 @@
                     targetCat.items = JSON.parse(JSON.stringify(defaultCat.items));
                     changed = true;
                 } else {
+                    const isHonmyeongCat = (catId === 'honmyeong_jeongmyeong');
+                    if (isHonmyeongCat && targetCat.description && targetCat.description.includes('창생주')) {
+                        targetCat.description = '혼명정을 소모해 각 혼명의 정명을 강화(현재 최대 13레벨, 레벨 추가 가능)하고 영구 스테이터스 획득';
+                        changed = true;
+                    }
                     targetCat.items.forEach(item => {
                         item.isGoddessTree = true;
-                        const maxLv = Math.max(1, Math.min(30, parseInt(item.maxSteps, 10) || 30));
+                        if (isHonmyeongCat) {
+                            item.isHonmyeong = true;
+                            if (item.hint && item.hint.includes('창생주')) {
+                                item.hint = '혼명정을 소모하여 강화 (현재 최대 13레벨 · 편집에서 레벨 추가 가능)';
+                                changed = true;
+                            }
+                            if (Number(item.maxSteps) === 30 && !item.honmyeongMigrated13) {
+                                item.maxSteps = 13;
+                                item.levels = normalizeTreeLevels(item, 13).slice(0, 13);
+                                item.honmyeongMigrated13 = true;
+                                changed = true;
+                            }
+                        }
+                        const defaultMax = isHonmyeongCat ? 13 : 30;
+                        const maxLv = Math.max(1, Math.min(50, parseInt(item.maxSteps, 10) || defaultMax));
                         item.maxSteps = maxLv;
                         if (!Array.isArray(item.levels) || item.levels.length === 0) {
                             item.levels = normalizeTreeLevels(item, maxLv);
+                            changed = true;
+                        } else if (item.levels.length !== maxLv) {
+                            item.levels = normalizeTreeLevels(item, maxLv).slice(0, maxLv);
                             changed = true;
                         }
                     });
@@ -2247,7 +2284,7 @@
             const slots = [];
             catalog.forEach(cat => {
                 (cat.items || []).forEach(item => {
-                    const maxSteps = Math.max(1, Math.min(30, parseInt(item.maxSteps, 10) || 1));
+                    const maxSteps = Math.max(1, Math.min(50, parseInt(item.maxSteps, 10) || 1));
                     slots.push({ key: item.id, max: maxSteps });
                     if (item.isAstalgia || cat.id === 'otherworld_astalgia') {
                         const duoMax = Math.max(0, Math.min(15, parseInt(item.duoTalkMax, 10) || 0));
@@ -2265,7 +2302,7 @@
             const bits = [];
             slots.forEach(slot => {
                 const val = Math.max(0, Math.min(slot.max, parseInt(progressObj[slot.key], 10) || 0));
-                for (let b = 4; b >= 0; b--) {
+                for (let b = 5; b >= 0; b--) {
                     bits.push((val >> b) & 1);
                 }
             });
@@ -2299,8 +2336,8 @@
                 const decoded = {};
                 slots.forEach((slot, idx) => {
                     let val = 0;
-                    for (let b = 0; b < 5; b++) {
-                        const bitIdx = idx * 5 + b;
+                    for (let b = 0; b < 6; b++) {
+                        const bitIdx = idx * 6 + b;
                         const byteIdx = Math.floor(bitIdx / 8);
                         if (byteIdx < bytes.length) {
                             const bit = (bytes[byteIdx] >> (7 - (bitIdx % 8))) & 1;
@@ -2350,7 +2387,7 @@
         // ==========================================
         function getItemStepValue(item) {
             const prog = getActiveProgress();
-            const maxSteps = Math.max(1, Math.min(30, parseInt(item.maxSteps, 10) || 1));
+            const maxSteps = Math.max(1, Math.min(50, parseInt(item.maxSteps, 10) || 1));
             return Math.max(0, Math.min(maxSteps, parseInt(prog[item.id], 10) || 0));
         }
 
@@ -2364,7 +2401,7 @@
         }
 
         function isItemFullyCompleted(cat, item) {
-            const maxSteps = Math.max(1, Math.min(30, parseInt(item.maxSteps, 10) || 1));
+            const maxSteps = Math.max(1, Math.min(50, parseInt(item.maxSteps, 10) || 1));
             const cur = getItemStepValue(item);
             if (item.isAstalgia || cat.id === 'otherworld_astalgia') {
                 const { duoCur, duoMax, quadCur, quadMax } = getAstalgiaTalkValues(item);
@@ -2380,7 +2417,7 @@
             let completedItemsCount = 0;
 
             items.forEach(item => {
-                const maxSteps = Math.max(1, Math.min(30, parseInt(item.maxSteps, 10) || 1));
+                const maxSteps = Math.max(1, Math.min(50, parseInt(item.maxSteps, 10) || 1));
                 const cur = getItemStepValue(item);
                 if (item.isAstalgia || cat.id === 'otherworld_astalgia') {
                     const { duoCur, duoMax, quadCur, quadMax } = getAstalgiaTalkValues(item);
@@ -2405,7 +2442,7 @@
         }
 
         function calculateTreeItemSummary(item) {
-            const maxLv = Math.max(1, Math.min(30, parseInt(item.maxSteps, 10) || 30));
+            const maxLv = Math.max(1, Math.min(50, parseInt(item.maxSteps, 10) || 30));
             const curLv = getItemStepValue(item);
             const levels = normalizeTreeLevels(item, maxLv);
 
@@ -2525,11 +2562,12 @@
 
                 if (cat.id === 'goddess_tree' || cat.id === 'honmyeong_jeongmyeong') {
                     const treeSum = calculateAllGoddessTreesSummary(cat);
+                    const currencyLabel = cat.id === 'honmyeong_jeongmyeong' ? '혼명정' : '창생주';
                     const statText = Object.entries(treeSum.allStats).map(([k, v]) => `${k} +${v}`).join(', ');
                     extraBadge = `
                         <div class="mt-2.5 pt-2.5 border-t border-slate-100 text-xs text-emerald-700 font-semibold flex items-center justify-between gap-2">
                             <span class="truncate">✨ 누적 스탯: ${statText || '아직 없음'}</span>
-                            <span class="shrink-0 text-slate-500">창생주 ${treeSum.totalSpent}개 사용</span>
+                            <span class="shrink-0 text-slate-500">${currencyLabel} ${treeSum.totalSpent}개 사용</span>
                         </div>
                     `;
                 } else if (cat.id === 'otherworld_astalgia') {
@@ -2751,14 +2789,15 @@
             const specialBanner = document.getElementById('detail-special-banner');
             if (cat.id === 'goddess_tree' || cat.id === 'honmyeong_jeongmyeong') {
                 const treeSum = calculateAllGoddessTreesSummary(cat);
+                const currencyLabel = cat.id === 'honmyeong_jeongmyeong' ? '혼명정' : '창생주';
                 const statEntries = Object.entries(treeSum.allStats);
                 specialBanner.className = 'rounded-xl p-4 text-sm border bg-emerald-50/80 border-emerald-200 text-emerald-950 space-y-2';
                 specialBanner.innerHTML = `
                     <div class="flex flex-wrap items-center justify-between gap-2">
                         <span class="font-extrabold text-emerald-900">${escapeHtml(cat.icon || '🌳')} ${escapeHtml(cat.name)} 누적 스테이터스 합계</span>
                         <div class="flex items-center gap-2 text-xs font-bold">
-                            <span class="px-2.5 py-1 rounded-lg bg-white border border-emerald-200 text-emerald-800">사용한 창생주: ${treeSum.totalSpent}개</span>
-                            <span class="px-2.5 py-1 rounded-lg bg-amber-100 text-amber-900">남은 필요 창생주: ${treeSum.totalRemaining}개</span>
+                            <span class="px-2.5 py-1 rounded-lg bg-white border border-emerald-200 text-emerald-800">사용한 ${currencyLabel}: ${treeSum.totalSpent}개</span>
+                            <span class="px-2.5 py-1 rounded-lg bg-amber-100 text-amber-900">남은 필요 ${currencyLabel}: ${treeSum.totalRemaining}개</span>
                         </div>
                     </div>
                     <div class="flex flex-wrap gap-2 pt-1">
@@ -3042,7 +3081,7 @@
         }
 
         function renderDetailItemRow(cat, item) {
-            const maxSteps = Math.max(1, Math.min(30, parseInt(item.maxSteps, 10) || 1));
+            const maxSteps = Math.max(1, Math.min(50, parseInt(item.maxSteps, 10) || 1));
             const cur = getItemStepValue(item);
             const isComplete = isItemFullyCompleted(cat, item);
             const allItems = cat.items || [];
@@ -3482,8 +3521,10 @@
                 `;
             }
 
-            // 여신의 나무 / 혼명의 정명 전용 UI (최대 30레벨)
-            if (item.isGoddessTree || cat.id === 'goddess_tree' || cat.id === 'honmyeong_jeongmyeong' || maxSteps > 5) {
+            // 여신의 나무 / 혼명의 정명 전용 UI (가변 레벨 지원)
+            if (item.isGoddessTree || item.isHonmyeong || cat.id === 'goddess_tree' || cat.id === 'honmyeong_jeongmyeong' || maxSteps > 5) {
+                const isHonmyeong = Boolean(item.isHonmyeong || cat.id === 'honmyeong_jeongmyeong');
+                const currencyLabel = isHonmyeong ? '혼명정' : '창생주';
                 const treeSum = calculateTreeItemSummary(item);
                 const isExpanded = !!expandedTreeIds[item.id];
                 const nextLvObj = treeSum.levels.find(l => l.level === cur + 1);
@@ -3505,14 +3546,14 @@
                                         ✨ 현재 상승치: ${treeSum.formattedStats.length > 0 ? treeSum.formattedStats.join(', ') : '없음 (Lv.0)'}
                                     </span>
                                     <span class="text-slate-600 font-medium">
-                                        💧 소모 창생주: <strong class="text-slate-800">${treeSum.spentCost}개</strong> / 남은 창생주: <strong class="text-amber-700">${treeSum.remainingCost}개</strong>
+                                        💧 소모 ${currencyLabel}: <strong class="text-slate-800">${treeSum.spentCost}개</strong> / 남은 ${currencyLabel}: <strong class="text-amber-700">${treeSum.remainingCost}개</strong>
                                     </span>
-                                    ${nextLvObj ? `<span class="text-indigo-600 font-semibold">▶ 다음 Lv.${nextLvObj.level}: ${escapeHtml(nextLvObj.statGain)} (창생주 ${nextLvObj.cost}개)</span>` : '<span class="text-emerald-600 font-bold">★ 최대 레벨 달성!</span>'}
+                                    ${nextLvObj ? `<span class="text-indigo-600 font-semibold">▶ 다음 Lv.${nextLvObj.level}: ${escapeHtml(nextLvObj.statGain)} (${currencyLabel} ${nextLvObj.cost}개)</span>` : '<span class="text-emerald-600 font-bold">★ 최대 레벨 달성!</span>'}
                                 </div>
                                 ${renderItemImageThumbnail(item)}
                             </div>
 
-                            <div class="flex items-center gap-1.5 self-start sm:self-center shrink-0">
+                            <div class="flex items-center gap-1.5 self-start sm:self-center shrink-0 flex-wrap">
                                 <button onclick="setItemProgress('${item.id}', ${Math.max(0, cur - 1)})" class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-extrabold transition" title="1레벨 감소">
                                     -1Lv
                                 </button>
@@ -3522,6 +3563,11 @@
                                 <button onclick="toggleTreePanel('${item.id}')" class="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-lg text-xs font-bold transition">
                                     ${isExpanded ? '레벨표 접기 ▲' : '레벨별 상세 ▼'}
                                 </button>
+                                ${isHonmyeong ? `
+                                    <button onclick="quickAddHonmyeongLevel('${cat.id}', '${item.id}')" class="px-2.5 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-lg text-xs font-bold transition" title="상한 레벨 +1 추가">
+                                        +레벨 추가
+                                    </button>
+                                ` : ''}
                                 ${reorderBtnsHtml}
                                 <button onclick="openItemModal('${cat.id}', '${item.id}')" class="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition" title="레벨/스탯 편집">
                                     ✏️
@@ -3531,9 +3577,10 @@
 
                         ${isExpanded ? `
                             <div class="mt-4 pt-3 border-t border-slate-200/80">
-                                <div class="flex items-center justify-between mb-2">
+                                <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
                                     <span class="text-xs font-bold text-slate-600">레벨을 클릭하면 해당 레벨까지 일괄 체크/해제됩니다</span>
-                                    <div class="flex items-center gap-2">
+                                    <div class="flex items-center gap-2.5">
+                                        ${isHonmyeong ? `<button onclick="quickAddHonmyeongLevel('${cat.id}', '${item.id}')" class="text-[11px] font-extrabold text-indigo-600 hover:underline">+ Lv.${maxSteps + 1} 추가</button>` : ''}
                                         <button onclick="setItemProgress('${item.id}', 0)" class="text-[11px] font-bold text-slate-500 hover:text-rose-600">0Lv 초기화</button>
                                         <button onclick="setItemProgress('${item.id}', ${maxSteps})" class="text-[11px] font-bold text-emerald-700 hover:underline">MAX(${maxSteps}Lv) 달성</button>
                                     </div>
@@ -3549,7 +3596,7 @@
                                                     <span>${checked ? '✓' : ''}</span>
                                                 </div>
                                                 <div class="text-[11px] font-semibold truncate ${checked ? 'text-emerald-50' : 'text-slate-800'}">${escapeHtml(lvObj.statGain)}</div>
-                                                <div class="text-[10px] mt-0.5 ${checked ? 'text-emerald-200' : 'text-amber-700 font-semibold'}">창생주 ${lvObj.cost}개</div>
+                                                <div class="text-[10px] mt-0.5 ${checked ? 'text-emerald-200' : 'text-amber-700 font-semibold'}">${currencyLabel} ${lvObj.cost}개</div>
                                             </button>
                                         `;
                                     }).join('')}
@@ -3700,6 +3747,43 @@
         function toggleTreePanel(itemId) {
             expandedTreeIds[itemId] = !expandedTreeIds[itemId];
             renderDetailView();
+        }
+
+        function quickAddHonmyeongLevel(catId, itemId) {
+            const cat = catalog.find(c => c.id === catId);
+            if (!cat) return;
+            const item = (cat.items || []).find(i => i.id === itemId);
+            if (!item) return;
+
+            const currentMax = Math.max(1, parseInt(item.maxSteps, 10) || 13);
+            if (currentMax >= 50) {
+                showToast('최대 50레벨까지만 추가할 수 있습니다.');
+                return;
+            }
+            const nextLv = currentMax + 1;
+            const existingLevels = normalizeTreeLevels(item, currentMax);
+            const lastLv = existingLevels[existingLevels.length - 1];
+            const defaultStat = lastLv && lastLv.statGain
+                ? lastLv.statGain
+                : `${(item.tag || '스탯').replace(/\s*상승$/, '').trim() || '스탯'} +1`;
+            const defaultCost = lastLv ? Math.max(1, parseInt(lastLv.cost, 10) || 1) : 1;
+
+            existingLevels.push({
+                level: nextLv,
+                statGain: defaultStat,
+                cost: defaultCost
+            });
+
+            item.isGoddessTree = true;
+            item.isHonmyeong = true;
+            item.honmyeongMigrated13 = true;
+            item.maxSteps = nextLv;
+            item.levels = existingLevels;
+            expandedTreeIds[item.id] = true;
+
+            saveCatalogToStorage();
+            renderCurrentView();
+            showToast(`Lv.${nextLv}이(가) 추가되었습니다. ✏️ 버튼에서 상승치와 혼명정 수량을 수정할 수 있습니다.`);
         }
 
         // ==========================================
@@ -4026,7 +4110,7 @@
                 document.getElementById('edit-item-image-url').value = item.image || '';
                 setItemModalImagePreview(item.image || '');
 
-                const maxSteps = Math.max(1, Math.min(30, parseInt(item.maxSteps, 10) || 1));
+                const maxSteps = Math.max(1, Math.min(50, parseInt(item.maxSteps, 10) || 1));
                 document.getElementById('edit-item-max-steps').value = item.isMysteriousCard
                     ? '10_card'
                     : (item.isGanasadaiHeart
@@ -4035,7 +4119,9 @@
                             ? '1_accessory'
                             : (item.isMonsterHeart
                                 ? '1_monster_heart'
-                                : (item.isAdventureSeminar ? `${Math.max(4, Math.min(5, maxSteps))}_quiz` : String(maxSteps)))));
+                                : (item.isAdventureSeminar
+                                    ? `${Math.max(4, Math.min(5, maxSteps))}_quiz`
+                                    : ((item.isHonmyeong || targetCatId === 'honmyeong_jeongmyeong') ? '13_honmyeong' : String(maxSteps))))));
                 deleteBtn.classList.remove('hidden');
 
                 renderStepRewardInputs(item.stepRewards || [], item.completeReward || '', item.levels || null, item);
@@ -4048,14 +4134,15 @@
                 document.getElementById('edit-item-hint').value = '';
                 clearItemImage();
 
-                const isTreeCat = (catSelect.value === 'goddess_tree' || catSelect.value === 'honmyeong_jeongmyeong');
+                const isHonmyeongCat = (catSelect.value === 'honmyeong_jeongmyeong');
+                const isTreeCat = (catSelect.value === 'goddess_tree');
                 const isAstCat = (catSelect.value === 'otherworld_astalgia');
                 const isOrbCat = (catSelect.value === 'master_orb');
                 const isGanaCat = (catSelect.value === 'ganasadai_heart');
                 const isAccCat = (catSelect.value === 'accessories');
                 const isLabCat = (catSelect.value === 'monster_doctor_lab');
                 const isSemCat = (catSelect.value === 'adventure_seminar');
-                document.getElementById('edit-item-max-steps').value = isTreeCat ? '30' : (isAstCat ? '10' : (isOrbCat ? '6' : (isGanaCat ? '2_thought' : (isAccCat ? '1_accessory' : (isLabCat ? '1_monster_heart' : (isSemCat ? '5_quiz' : '1'))))));
+                document.getElementById('edit-item-max-steps').value = isHonmyeongCat ? '13_honmyeong' : (isTreeCat ? '30' : (isAstCat ? '10' : (isOrbCat ? '6' : (isGanaCat ? '2_thought' : (isAccCat ? '1_accessory' : (isLabCat ? '1_monster_heart' : (isSemCat ? '5_quiz' : '1')))))));
                 deleteBtn.classList.add('hidden');
 
                 renderStepRewardInputs([], '', null, null);
@@ -4071,7 +4158,9 @@
         function onItemModalCategoryChange() {
             const catId = document.getElementById('edit-item-category').value;
             updateGroupSuggestions(catId);
-            if (catId === 'goddess_tree' || catId === 'honmyeong_jeongmyeong') {
+            if (catId === 'honmyeong_jeongmyeong') {
+                document.getElementById('edit-item-max-steps').value = '13_honmyeong';
+            } else if (catId === 'goddess_tree') {
                 document.getElementById('edit-item-max-steps').value = '30';
             } else if (catId === 'otherworld_astalgia') {
                 document.getElementById('edit-item-max-steps').value = '10';
@@ -4269,13 +4358,15 @@
             const rawStepVal = document.getElementById('edit-item-max-steps').value;
             const maxSteps = rawStepVal === '10_card'
                 ? 10
-                : (rawStepVal === '2_thought'
-                    ? 2
-                    : ((rawStepVal === '1_monster_heart' || rawStepVal === '1_accessory')
-                        ? 1
-                        : (rawStepVal === '4_quiz'
-                            ? 4
-                            : (rawStepVal === '5_quiz' ? 5 : Math.max(1, Math.min(30, parseInt(rawStepVal, 10) || 1))))));
+                : (rawStepVal === '13_honmyeong'
+                    ? ((existingItem && existingItem.maxSteps) ? Math.max(1, Math.min(50, parseInt(existingItem.maxSteps, 10) || 13)) : 13)
+                    : (rawStepVal === '2_thought'
+                        ? 2
+                        : ((rawStepVal === '1_monster_heart' || rawStepVal === '1_accessory')
+                            ? 1
+                            : (rawStepVal === '4_quiz'
+                                ? 4
+                                : (rawStepVal === '5_quiz' ? 5 : Math.max(1, Math.min(50, parseInt(rawStepVal, 10) || 1)))))));
 
             const normalWrapper = document.getElementById('edit-normal-rewards-wrapper');
             const stepContainer = document.getElementById('edit-step-rewards-container');
@@ -4299,7 +4390,7 @@
             const isCardMode = !isSemMode && !isAccMode && !isMhMode && !isGanaMode && (rawStepVal === '10_card' || (existingItem && existingItem.isMysteriousCard));
             const isOrbMode = !isSemMode && !isAccMode && !isMhMode && !isGanaMode && !isCardMode && (catId === 'master_orb' || maxSteps === 6 || (existingItem && existingItem.isMasterOrb));
             const isAstMode = !isSemMode && !isAccMode && !isMhMode && !isGanaMode && !isCardMode && !isOrbMode && (catId === 'otherworld_astalgia' || maxSteps === 10 || (existingItem && existingItem.isAstalgia));
-            const isTreeMode = !isSemMode && !isAccMode && !isMhMode && !isGanaMode && !isCardMode && !isOrbMode && !isAstMode && (catId === 'goddess_tree' || catId === 'honmyeong_jeongmyeong' || maxSteps > 5 || Array.isArray(existingLevels));
+            const isTreeMode = !isSemMode && !isAccMode && !isMhMode && !isGanaMode && !isCardMode && !isOrbMode && !isAstMode && (rawStepVal === '13_honmyeong' || catId === 'goddess_tree' || catId === 'honmyeong_jeongmyeong' || maxSteps > 5 || Array.isArray(existingLevels));
 
             if (isSemMode) {
                 normalWrapper.classList.add('hidden');
@@ -4452,24 +4543,20 @@
                 mhSection.classList.add('hidden');
                 semSection.classList.add('hidden');
                 treeSection.classList.remove('hidden');
-                const treeMax = maxSteps > 5 ? maxSteps : 30;
-                document.getElementById('edit-item-max-steps').value = String(treeMax);
+                const isHonmyeongMode = (rawStepVal === '13_honmyeong' || catId === 'honmyeong_jeongmyeong' || Boolean(existingItem && existingItem.isHonmyeong));
+                const currencyLabel = isHonmyeongMode ? '혼명정' : '창생주';
+                const treeMax = isHonmyeongMode
+                    ? ((existingItem && existingItem.maxSteps) ? Math.max(1, Math.min(50, parseInt(existingItem.maxSteps, 10) || 13)) : 13)
+                    : (maxSteps > 5 ? maxSteps : 30);
+                document.getElementById('edit-item-max-steps').value = isHonmyeongMode ? '13_honmyeong' : String(treeMax);
+                document.getElementById('edit-tree-section-title').textContent = `레벨별 스테이터스 상승치 & 필요 ${currencyLabel}`;
+                document.getElementById('edit-tree-cost-header').textContent = `필요 ${currencyLabel}`;
                 document.getElementById('edit-tree-level-summary').textContent = `1 ~ ${treeMax}레벨 설정`;
 
                 const tagHint = document.getElementById('edit-item-tag').value.trim() || '스탯';
                 const levels = normalizeTreeLevels({ levels: existingLevels || [], tag: tagHint }, treeMax);
 
-                treeContainer.innerHTML = levels.map(lvObj => `
-                    <div class="grid grid-cols-12 gap-2 items-center">
-                        <div class="col-span-2 text-xs font-extrabold text-emerald-900 pl-1">Lv.${lvObj.level}</div>
-                        <div class="col-span-6">
-                            <input type="text" data-tree-stat="${lvObj.level}" value="${escapeHtml(lvObj.statGain)}" placeholder="예: 공격력 +2" class="w-full px-2.5 py-1 bg-white border border-emerald-200 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-emerald-500">
-                        </div>
-                        <div class="col-span-4">
-                            <input type="number" min="0" data-tree-cost="${lvObj.level}" value="${lvObj.cost}" class="w-full px-2.5 py-1 bg-white border border-emerald-200 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-emerald-500">
-                        </div>
-                    </div>
-                `).join('');
+                treeContainer.innerHTML = levels.map(lvObj => createTreeLevelRowHtml(lvObj.level, lvObj.statGain, lvObj.cost)).join('');
             } else {
                 treeSection.classList.add('hidden');
                 astSection.classList.add('hidden');
@@ -4498,6 +4585,51 @@
             }
         }
 
+        function createTreeLevelRowHtml(level, statGain = '', cost = 1) {
+            return `
+                <div class="grid grid-cols-12 gap-2 items-center tree-level-row">
+                    <div class="col-span-2 text-xs font-extrabold text-emerald-900 pl-1">Lv.${level}</div>
+                    <div class="col-span-6">
+                        <input type="text" data-tree-stat="${level}" value="${escapeHtml(statGain)}" placeholder="예: 공격력 +2" class="w-full px-2.5 py-1 bg-white border border-emerald-200 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-emerald-500">
+                    </div>
+                    <div class="col-span-4">
+                        <input type="number" min="0" data-tree-cost="${level}" value="${cost}" class="w-full px-2.5 py-1 bg-white border border-emerald-200 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-emerald-500">
+                    </div>
+                </div>
+            `;
+        }
+
+        function addTreeLevelRow() {
+            const container = document.getElementById('edit-tree-levels-container');
+            if (!container) return;
+            const rows = container.querySelectorAll('.tree-level-row');
+            if (rows.length >= 50) {
+                showToast('최대 50레벨까지 추가할 수 있습니다.');
+                return;
+            }
+            const nextLv = rows.length + 1;
+            const lastRow = rows[rows.length - 1];
+            const lastStat = lastRow ? (lastRow.querySelector('[data-tree-stat]').value || '') : '';
+            const lastCost = lastRow ? (parseInt(lastRow.querySelector('[data-tree-cost]').value, 10) || 1) : 1;
+
+            container.insertAdjacentHTML('beforeend', createTreeLevelRowHtml(nextLv, lastStat, lastCost));
+            container.scrollTop = container.scrollHeight;
+            document.getElementById('edit-tree-level-summary').textContent = `1 ~ ${nextLv}레벨 설정`;
+        }
+
+        function removeLastTreeLevelRow() {
+            const container = document.getElementById('edit-tree-levels-container');
+            if (!container) return;
+            const rows = container.querySelectorAll('.tree-level-row');
+            if (rows.length <= 1) {
+                showToast('최소 1레벨은 유지되어야 합니다.');
+                return;
+            }
+            rows[rows.length - 1].remove();
+            const remaining = rows.length - 1;
+            document.getElementById('edit-tree-level-summary').textContent = `1 ~ ${remaining}레벨 설정`;
+        }
+
         function saveItemForm(e) {
             e.preventDefault();
             const itemId = document.getElementById('edit-item-id').value;
@@ -4508,15 +4640,18 @@
             const hint = document.getElementById('edit-item-hint').value.trim();
             const image = document.getElementById('edit-item-image-url').value.trim();
             const rawStepVal = document.getElementById('edit-item-max-steps').value;
+            const treeRowCount = document.querySelectorAll('#edit-tree-levels-container .tree-level-row').length;
             const maxSteps = rawStepVal === '10_card'
                 ? 10
-                : (rawStepVal === '2_thought'
-                    ? 2
-                    : ((rawStepVal === '1_monster_heart' || rawStepVal === '1_accessory')
-                        ? 1
-                        : (rawStepVal === '4_quiz'
-                            ? 4
-                            : (rawStepVal === '5_quiz' ? 5 : Math.max(1, Math.min(30, parseInt(rawStepVal, 10) || 1))))));
+                : (rawStepVal === '13_honmyeong'
+                    ? Math.max(1, Math.min(50, treeRowCount || 13))
+                    : (rawStepVal === '2_thought'
+                        ? 2
+                        : ((rawStepVal === '1_monster_heart' || rawStepVal === '1_accessory')
+                            ? 1
+                            : (rawStepVal === '4_quiz'
+                                ? 4
+                                : (rawStepVal === '5_quiz' ? 5 : Math.max(1, Math.min(50, treeRowCount || parseInt(rawStepVal, 10) || 1)))))));
 
             if (!title || !targetCatId) return;
 
@@ -4527,7 +4662,7 @@
             const isCardMode = !isSemMode && !isAccMode && !isMhMode && !isGanaMode && (rawStepVal === '10_card');
             const isOrbMode = !isSemMode && !isAccMode && !isMhMode && !isGanaMode && !isCardMode && (targetCatId === 'master_orb' || maxSteps === 6);
             const isAstMode = !isSemMode && !isAccMode && !isMhMode && !isGanaMode && !isCardMode && !isOrbMode && (targetCatId === 'otherworld_astalgia' || maxSteps === 10);
-            const isTreeMode = !isSemMode && !isAccMode && !isMhMode && !isGanaMode && !isCardMode && !isOrbMode && !isAstMode && (targetCatId === 'goddess_tree' || targetCatId === 'honmyeong_jeongmyeong' || maxSteps > 5);
+            const isTreeMode = !isSemMode && !isAccMode && !isMhMode && !isGanaMode && !isCardMode && !isOrbMode && !isAstMode && (rawStepVal === '13_honmyeong' || targetCatId === 'goddess_tree' || targetCatId === 'honmyeong_jeongmyeong' || maxSteps > 5);
             let stepRewards = [];
             let completeReward = '';
             let levels = null;
@@ -4692,6 +4827,10 @@
                 newItemObj.quadTalkPartners = quadTalkPartners;
             } else if (isTreeMode) {
                 newItemObj.isGoddessTree = true;
+                if (rawStepVal === '13_honmyeong' || targetCatId === 'honmyeong_jeongmyeong') {
+                    newItemObj.isHonmyeong = true;
+                    newItemObj.honmyeongMigrated13 = true;
+                }
                 newItemObj.levels = levels;
             }
 
