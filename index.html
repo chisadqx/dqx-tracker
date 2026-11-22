@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>드래곤 퀘스트 10 콘텐츠 진행도 트래커</title>
-    <script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=Z1TNNRIuSy89UgGWNzqRR2vhYQqBgrvkYbXMmeNm0_GdIvqC51GC9ZQTByOqYqsFYc7N0VuJWx9vKNB_0mClhW5rPCP6XHMe6jduyCQuujyGWKaBoBeZgWXfX9asoknknoeFjH2bBCo78fTRDcJ_NMscTVe-01T4ADMvrmwyMV2oaA1wzyFgvJBQcgWhspVkJx_XqRM_GKUzvXjm7qYwylFuylv6Q2Ah7AUw4m5A5QjtEzTdrv-XUm1cfCIP0hVmvF_A3Cp3YTMI8PBVn53JiIU4CIJZa2n6bQdhLyfwCeEL7jpDVYjoK584dTHbxJcd" charset="UTF-8"></script><script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=Du3KKWVvrDSKR4Wn9TBFxA_N4BOX1foSjfVLBexG7ufIla2l8TzINoetxVbchTki6rJdHqygEiOe2zd0XGARc3FVZBiZhdf0GzRKBxBwJtQybFdII_B6PAWIxVTD8twLfa3MLZ9un2ipj9O5QQv0Auf9YyYymf6VQX87NBZKSiInOW2-y49yyxmxqR88tMyiWXAFH-cioEFDL35lJxonT61ceTt1Hu0MjLJT1VcH5DUneMhySgcELMc3kjLP8JP6Yt2QMvfOP3DWqA6NXNLz_EwzsWlCP813q0vDeSgV1eOBVoj_FlFbgK0DJaqNWMlo" charset="UTF-8"></script><script src="https://cdn.tailwindcss.com"></script>
+    <script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=aaGNWxlSeSslQ764zJ3ROSPutOuPZimlevPp82FtH-ChoEY80Rj0scUAZ5tZq7FELwbHnSqKEOLkCacaFF3v1TlwMAXDiuK-GlOenig2DHrJInOB5d_9f3YzS4QwQrm4D_7lT9D5xGGMj0he-L4z_phuJG5mlYYDFRUB_QroHsf9IvjXNvKwuxk-imBG_nKTQGusWe_kN1ETtgqypU6qypYC1Ex_0Q-Y78mQ8hi0nTmgVYYKI4Hxfc09O5h55edfHKsqN9Y4PVkRnjwWh_DWEDhgS8mgwfGE9f48E-YkWmWOniSOnf9--uQIt6N5j5BM" charset="UTF-8"></script><script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=Du3KKWVvrDSKR4Wn9TBFxA_N4BOX1foSjfVLBexG7ufIla2l8TzINoetxVbchTki6rJdHqygEiOe2zd0XGARc3FVZBiZhdf0GzRKBxBwJtQybFdII_B6PAWIxVTD8twLfa3MLZ9un2ipj9O5QQv0Auf9YyYymf6VQX87NBZKSiInOW2-y49yyxmxqR88tMyiWXAFH-cioEFDL35lJxonT61ceTt1Hu0MjLJT1VcH5DUneMhySgcELMc3kjLP8JP6Yt2QMvfOP3DWqA6NXNLz_EwzsWlCP813q0vDeSgV1eOBVoj_FlFbgK0DJaqNWMlo" charset="UTF-8"></script><script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body {
@@ -338,9 +338,9 @@
                     </div>
                 </div>
 
-                <!-- 악세서리 전용 입력 영역 (기본 효과 / 스테이터스 / 합성 최대치 / 획득 방법) -->
+                <!-- 악세서리 전용 입력 영역 (기본 효과 / 스테이터스 / 추천 합성 여러 개 / 획득 방법) -->
                 <div id="edit-accessory-section" class="hidden bg-amber-50/70 p-3.5 rounded-xl border border-amber-200 space-y-2.5">
-                    <div class="text-xs font-bold text-amber-900">💍 악세서리 상세 설정 (기본 효과 / 스테이터스 / 합성 최대치 / 획득 방법)</div>
+                    <div class="text-xs font-bold text-amber-900">💍 악세서리 상세 설정 (기본 효과 / 스테이터스 / 추천 합성 / 획득 방법)</div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                         <div>
                             <label class="block text-[11px] font-bold text-amber-900 mb-1">기본 효과</label>
@@ -351,14 +351,22 @@
                             <input type="text" id="edit-acc-stats" placeholder="예: 수비력 +2, 멋짐 +5, 최대 HP +4" class="w-full px-2.5 py-1.5 bg-white border border-amber-200 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-amber-500">
                         </div>
                     </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                        <div>
-                            <label class="block text-[11px] font-bold text-amber-900 mb-1">합성 최대치 (이론치)</label>
-                            <input type="text" id="edit-acc-synthesis-max" placeholder="예: 공격력 +5 ×3 (총 +15) / HP +4 ×3" class="w-full px-2.5 py-1.5 bg-white border border-amber-200 rounded-lg text-xs font-bold text-amber-950 focus:outline-none focus:ring-1 focus:ring-amber-500">
+                    <div>
+                        <label class="block text-[11px] font-bold text-amber-900 mb-1">획득 방법</label>
+                        <input type="text" id="edit-acc-obtain-method" placeholder="예: 마법의 미궁 코인 보스 토벌 / 작은 메달 교환" class="w-full px-2.5 py-1.5 bg-white border border-amber-200 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-amber-500">
+                    </div>
+                    <div class="bg-white p-2.5 rounded-xl border border-amber-200/90 space-y-2">
+                        <div class="flex items-center justify-between gap-2">
+                            <div>
+                                <div class="text-[11px] font-extrabold text-amber-950">👑 추천 합성 / 합성 최대치 (여러 개 추가 가능)</div>
+                                <p class="text-[10px] text-slate-500">용도·직업별 추천 합성(예: HP 이론치, 공격력 이론치, 내성용 등)을 여러 개 등록할 수 있습니다.</p>
+                            </div>
+                            <button type="button" onclick="addAccessorySynthesisRow()" class="px-2.5 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-[11px] font-bold transition shrink-0">
+                                + 추천 합성 추가
+                            </button>
                         </div>
-                        <div>
-                            <label class="block text-[11px] font-bold text-amber-900 mb-1">획득 방법</label>
-                            <input type="text" id="edit-acc-obtain-method" placeholder="예: 마법의 미궁 코인 보스 토벌 / 작은 메달 교환" class="w-full px-2.5 py-1.5 bg-white border border-amber-200 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-amber-500">
+                        <div id="edit-acc-synthesis-list-container" class="space-y-1.5 max-h-48 overflow-y-auto custom-scrollbar pr-1">
+                            <!-- JS로 추천 합성 입력 행 동적 생성 -->
                         </div>
                     </div>
                 </div>
@@ -621,6 +629,56 @@
                     ⚠️ 카테고리 및 항목 목록을 초기 기본값으로 복원
                 </button>
             </div>
+        </div>
+    </div>
+
+    <!-- 모달 3-2: 세부 지역 / 그룹 이미지 첨부 모달 -->
+    <div id="group-image-modal" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl border border-slate-200 space-y-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="text-lg font-extrabold text-slate-900">🖼️ 세부 지역 / 그룹 이미지 첨부</h3>
+                    <p id="group-image-modal-subtitle" class="text-xs font-bold text-amber-800 mt-0.5"></p>
+                </div>
+                <button type="button" onclick="closeGroupImageModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold px-2">×</button>
+            </div>
+            <form onsubmit="saveGroupImageForm(event)" class="space-y-4">
+                <input type="hidden" id="edit-group-img-cat-id">
+                <input type="hidden" id="edit-group-img-name">
+
+                <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 space-y-2.5">
+                    <div class="flex items-center justify-between">
+                        <label class="block text-xs font-bold text-slate-700">지도 / 위치 스크린샷 선택 또는 URL 입력</label>
+                        <button type="button" id="clear-group-image-btn" onclick="clearGroupImage()" class="hidden text-[11px] font-bold text-rose-600 hover:underline">
+                            이미지 삭제
+                        </button>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label class="px-3 py-2 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 rounded-xl text-xs font-bold cursor-pointer transition text-center flex items-center justify-center gap-1.5">
+                            <span>🖼️ 이미지 파일 선택 (자동 최적화)</span>
+                            <input type="file" id="edit-group-image-file" accept="image/*" onchange="handleGroupImageUpload(event)" class="hidden">
+                        </label>
+                        <input type="text" id="edit-group-image-url" oninput="previewGroupImageFromInput()" placeholder="또는 이미지 URL 주소 붙여넣기 (https://...)" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                    <div id="edit-group-image-preview-wrap" class="hidden pt-1">
+                        <img id="edit-group-image-preview" src="" alt="그룹 이미지 미리보기" onerror="this.parentElement.classList.add('hidden')" class="max-h-52 rounded-xl border border-slate-200 object-contain bg-white mx-auto">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">이미지 설명 / 메모 (선택)</label>
+                    <input type="text" id="edit-group-image-caption" placeholder="예: 1지역 시작의 초원 전체 지도 및 NPC 위치" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+
+                <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+                    <button type="button" onclick="closeGroupImageModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-sm font-semibold transition">
+                        취소
+                    </button>
+                    <button type="submit" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-bold transition">
+                        저장
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -1786,6 +1844,10 @@
                         accBaseEffect: '공격력 +10 (전승 포함 시 최대 공격력 +30)',
                         accStats: '최대 HP +3, 공격력 +10, 멋짐 +5',
                         accSynthesisMax: '공격력 +5 × 3줄 (총 공격력 +15)',
+                        accSynthesisList: [
+                            { label: '공격 이론치', effect: '공격력 +5 × 3줄 (총 공격력 +15)' },
+                            { label: 'HP 보완형', effect: '최대 HP +3 × 3줄 (총 최대 HP +9)' }
+                        ],
                         accObtainMethod: '마법의 미궁 「전설의 삼악마」 토벌 보상'
                     },
                     {
@@ -2966,6 +3028,11 @@
                         item.tag || '',
                         item.hint || '',
                         item.completeReward || '',
+                        item.accBaseEffect || '',
+                        item.accStats || '',
+                        item.accSynthesisMax || '',
+                        item.accObtainMethod || '',
+                        ...(Array.isArray(item.accSynthesisList) ? item.accSynthesisList.map(s => `${s.label || ''} ${s.effect || ''}`) : []),
                         ...(Array.isArray(item.stepRewards) ? item.stepRewards : [])
                     ].join(' ').toLowerCase();
                     if (!haystack.includes(searchQuery)) return false;
@@ -3068,12 +3135,42 @@
                     itemsHtml = `<div class="divide-y divide-slate-100">${items.map(item => renderDetailItemRow(cat, item)).join('')}</div>`;
                 }
 
+                const groupImgData = getCategoryGroupImage(cat, groupName);
+                const canAttachGroupImg = (cat.id === 'yellow_diary' || !!groupImgData);
+                const groupImgBannerHtml = groupImgData && groupImgData.image ? `
+                    <div class="px-4 sm:px-5 py-3 bg-amber-50/50 border-b border-slate-100">
+                        <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+                            <button type="button" onclick="openImageLightbox(this.dataset.src, this.dataset.title)" data-src="${escapeHtml(groupImgData.image)}" data-title="${escapeHtml(groupName + (groupImgData.caption ? ' - ' + groupImgData.caption : ''))}" class="group relative inline-block rounded-xl overflow-hidden border border-amber-200/90 bg-white shadow-2xs hover:border-indigo-400 transition shrink-0">
+                                <img src="${escapeHtml(groupImgData.image)}" alt="${escapeHtml(groupName)}" onerror="this.closest('.border-b').style.display='none'" class="max-h-44 sm:max-h-48 w-auto max-w-full object-contain mx-auto">
+                                <span class="absolute bottom-1.5 right-1.5 px-2 py-0.5 rounded-md bg-slate-900/75 text-white text-[10px] font-bold opacity-90 group-hover:bg-indigo-600 transition">🔍 크게 보기</span>
+                            </button>
+                            <div class="flex-1 min-w-0 space-y-1.5">
+                                <div class="text-xs font-extrabold text-amber-950">🗺️ ${escapeHtml(groupName)} 참고 이미지</div>
+                                ${groupImgData.caption ? `<p class="text-xs text-slate-700 leading-relaxed">${escapeHtml(groupImgData.caption)}</p>` : '<p class="text-[11px] text-slate-500">이미지를 클릭하면 원본 크기로 확대됩니다.</p>'}
+                                <div>
+                                    <button type="button" onclick="openGroupImageModal('${cat.id}', this.dataset.group)" data-group="${escapeHtml(groupName)}" class="px-2.5 py-1 bg-white hover:bg-amber-100/70 text-amber-900 border border-amber-200 rounded-lg text-[11px] font-bold transition">
+                                        🖼️ 이미지 변경 / 삭제
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                ` : '';
+
                 return `
                     <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-2xs">
-                        <div class="px-4 sm:px-5 py-3 bg-slate-50/90 border-b border-slate-100 flex items-center justify-between">
-                            <h3 class="text-sm font-extrabold text-slate-800">${escapeHtml(groupName)}</h3>
-                            <span class="text-xs font-bold text-slate-500">${groupCompleted} / ${items.length} 완료</span>
+                        <div class="px-4 sm:px-5 py-3 bg-slate-50/90 border-b border-slate-100 flex items-center justify-between gap-2">
+                            <div class="flex items-center gap-2 min-w-0">
+                                <h3 class="text-sm font-extrabold text-slate-800 truncate">${escapeHtml(groupName)}</h3>
+                                ${canAttachGroupImg ? `
+                                    <button type="button" onclick="openGroupImageModal('${cat.id}', this.dataset.group)" data-group="${escapeHtml(groupName)}" class="px-2 py-0.5 rounded-lg text-[11px] font-bold border transition shrink-0 ${groupImgData && groupImgData.image ? 'bg-amber-100/80 hover:bg-amber-200/80 text-amber-900 border-amber-300' : 'bg-white hover:bg-indigo-50 text-slate-600 hover:text-indigo-700 border-slate-200'}" title="이 세부 지역/그룹에 이미지 첨부">
+                                        ${groupImgData && groupImgData.image ? '🖼️ 이미지 편집' : '+ 이미지 첨부'}
+                                    </button>
+                                ` : ''}
+                            </div>
+                            <span class="text-xs font-bold text-slate-500 shrink-0">${groupCompleted} / ${items.length} 완료</span>
                         </div>
+                        ${groupImgBannerHtml}
                         ${itemsHtml}
                     </div>
                 `;
@@ -3158,9 +3255,19 @@
                 `;
             }
 
-            // 악세서리 전용 UI (기본 효과 / 스테이터스 / 합성 최대치 / 획득 방법)
+            // 악세서리 전용 UI (기본 효과 / 스테이터스 / 추천 합성 여러 개 / 획득 방법)
             if (item.isAccessory || cat.id === 'accessories') {
                 const accDone = cur >= 1;
+                const synList = getAccessorySynthesisList(item);
+                const synHtml = synList.length > 0
+                    ? `<ul class="space-y-1 mt-1">${synList.map(syn => `
+                        <li class="flex items-start gap-1.5 text-xs">
+                            ${syn.label ? `<span class="px-1.5 py-0.5 rounded bg-amber-200/80 text-amber-950 text-[10px] font-extrabold shrink-0">${escapeHtml(syn.label)}</span>` : '<span class="text-amber-700 font-bold shrink-0">•</span>'}
+                            <span class="font-extrabold text-amber-950 break-keep">${escapeHtml(syn.effect)}</span>
+                        </li>
+                    `).join('')}</ul>`
+                    : `<div class="font-extrabold text-amber-950">-</div>`;
+
                 return `
                     <div class="p-4 sm:p-5 transition ${accDone ? 'bg-amber-50/30' : 'hover:bg-slate-50/60'}">
                         <div class="flex items-start justify-between gap-3 mb-2.5">
@@ -3196,8 +3303,8 @@
                                 <div class="font-bold text-slate-800">${escapeHtml(item.accStats || '-')}</div>
                             </div>
                             <div class="p-2.5 rounded-xl bg-amber-50/80 border border-amber-200 text-xs">
-                                <div class="text-[11px] font-extrabold text-amber-900 mb-0.5">👑 합성 최대치</div>
-                                <div class="font-extrabold text-amber-950">${escapeHtml(item.accSynthesisMax || '-')}</div>
+                                <div class="text-[11px] font-extrabold text-amber-900 mb-0.5">👑 추천 합성 / 합성 최대치 (${synList.length}종)</div>
+                                ${synHtml}
                             </div>
                             <div class="p-2.5 rounded-xl bg-indigo-50/60 border border-indigo-200 text-xs">
                                 <div class="text-[11px] font-extrabold text-indigo-900 mb-0.5">🗺️ 획득 방법</div>
@@ -3276,7 +3383,7 @@
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                             <label class="p-3 rounded-xl border flex items-start gap-2.5 cursor-pointer select-none transition ${minDone ? 'bg-rose-50/80 border-rose-300' : 'bg-white border-slate-200 hover:border-rose-300'}">
-                                <input type="checkbox" ${minDone ? 'checked' : ''} onchange="setGanasadaiThoughtStep('${item.id}', 'min', this.checked)" class="mt-0.5 w-4 h-4 rounded border-slate-300 text-rose-600 focus:ring-rose-500 cursor-pointer shrink-0">
+                                <input type="checkbox" ${minDone ? 'checked' : ''} onchange="setItemProgress('${item.id}', this.checked ? Math.max(1, cur) : 0)" class="mt-0.5 w-4 h-4 rounded border-slate-300 text-rose-600 focus:ring-rose-500 cursor-pointer shrink-0">
                                 <div class="text-xs">
                                     <div class="font-extrabold text-rose-900">사념 효과 최소치</div>
                                     <div class="font-bold text-slate-800 mt-0.5">${escapeHtml(item.thoughtMinEffect || '-')}</div>
@@ -3284,7 +3391,7 @@
                             </label>
 
                             <label class="p-3 rounded-xl border flex items-start gap-2.5 cursor-pointer select-none transition ${maxDone ? 'bg-emerald-50/80 border-emerald-300' : 'bg-white border-slate-200 hover:border-emerald-300'}">
-                                <input type="checkbox" ${maxDone ? 'checked' : ''} onchange="setGanasadaiThoughtStep('${item.id}', 'max', this.checked)" class="mt-0.5 w-4 h-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer shrink-0">
+                                <input type="checkbox" ${maxDone ? 'checked' : ''} onchange="setItemProgress('${item.id}', this.checked ? 2 : (minDone ? 1 : 0))" class="mt-0.5 w-4 h-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer shrink-0">
                                 <div class="text-xs">
                                     <div class="font-extrabold text-emerald-900">사념 효과 최대치</div>
                                     <div class="font-bold text-slate-800 mt-0.5">${escapeHtml(item.thoughtMaxEffect || '-')}</div>
@@ -3710,6 +3817,169 @@
             `;
         }
 
+        // ==========================================
+        // 악세서리 추천 합성 다중 입력 헬퍼
+        // ==========================================
+        function getAccessorySynthesisList(item) {
+            if (!item) return [];
+            if (Array.isArray(item.accSynthesisList) && item.accSynthesisList.length > 0) {
+                return item.accSynthesisList.map(s => ({
+                    label: (s && s.label) ? String(s.label) : '',
+                    effect: (s && s.effect) ? String(s.effect) : ''
+                }));
+            }
+            if (item.accSynthesisMax && String(item.accSynthesisMax).trim()) {
+                return [{ label: '이론치', effect: String(item.accSynthesisMax).trim() }];
+            }
+            return [];
+        }
+
+        function renderAccessorySynthesisInputs(synList = []) {
+            const container = document.getElementById('edit-acc-synthesis-list-container');
+            if (!container) return;
+            container.innerHTML = '';
+            if (synList.length === 0) {
+                addAccessorySynthesisRow('', '');
+                return;
+            }
+            synList.forEach(s => {
+                addAccessorySynthesisRow(s.label || '', s.effect || '');
+            });
+        }
+
+        function addAccessorySynthesisRow(label = '', effect = '') {
+            const container = document.getElementById('edit-acc-synthesis-list-container');
+            if (!container) return;
+            const row = document.createElement('div');
+            row.className = 'flex items-center gap-1.5 acc-syn-row';
+            row.innerHTML = `
+                <input type="text" value="${escapeHtml(label)}" placeholder="용도 (예: HP형)" class="w-24 sm:w-28 px-2 py-1 bg-amber-50/70 border border-amber-200 rounded-lg text-xs font-bold text-amber-950 acc-syn-label focus:outline-none focus:ring-1 focus:ring-amber-500">
+                <input type="text" value="${escapeHtml(effect)}" placeholder="합성 효과 (예: 최대 HP +5 ×3)" class="flex-1 px-2.5 py-1 bg-white border border-amber-200 rounded-lg text-xs font-semibold acc-syn-effect focus:outline-none focus:ring-1 focus:ring-amber-500">
+                <button type="button" onclick="this.parentElement.remove()" class="px-1.5 py-1 text-rose-500 hover:text-rose-700 text-xs font-bold" title="삭제">✕</button>
+            `;
+            container.appendChild(row);
+        }
+
+        // ==========================================
+        // 세부 지역 / 그룹 이미지 첨부 헬퍼
+        // ==========================================
+        function getCategoryGroupImage(cat, groupName) {
+            if (!cat || !groupName || !cat.groupImages || typeof cat.groupImages !== 'object') return null;
+            const entry = cat.groupImages[groupName];
+            if (!entry || !entry.image) return null;
+            return entry;
+        }
+
+        function setGroupModalImagePreview(src) {
+            const wrap = document.getElementById('edit-group-image-preview-wrap');
+            const img = document.getElementById('edit-group-image-preview');
+            const clearBtn = document.getElementById('clear-group-image-btn');
+            if (src && src.trim()) {
+                img.src = src.trim();
+                wrap.classList.remove('hidden');
+                clearBtn.classList.remove('hidden');
+            } else {
+                img.src = '';
+                wrap.classList.add('hidden');
+                clearBtn.classList.add('hidden');
+            }
+        }
+
+        function previewGroupImageFromInput() {
+            const val = document.getElementById('edit-group-image-url').value;
+            setGroupModalImagePreview(val);
+        }
+
+        function clearGroupImage() {
+            document.getElementById('edit-group-image-url').value = '';
+            document.getElementById('edit-group-image-file').value = '';
+            document.getElementById('edit-group-image-caption').value = '';
+            setGroupModalImagePreview('');
+        }
+
+        function handleGroupImageUpload(event) {
+            const file = event.target.files && event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const MAX_WIDTH = 1100;
+                    const MAX_HEIGHT = 850;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > MAX_WIDTH || height > MAX_HEIGHT) {
+                        const ratio = Math.min(MAX_WIDTH / width, MAX_HEIGHT / height);
+                        width = Math.round(width * ratio);
+                        height = Math.round(height * ratio);
+                    }
+
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.8);
+                    document.getElementById('edit-group-image-url').value = compressedDataUrl;
+                    setGroupModalImagePreview(compressedDataUrl);
+                    showToast('지역 이미지가 최적화되어 첨부되었습니다.');
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function openGroupImageModal(catId, groupName) {
+            const cat = catalog.find(c => c.id === catId);
+            if (!cat) return;
+
+            document.getElementById('edit-group-img-cat-id').value = catId;
+            document.getElementById('edit-group-img-name').value = groupName;
+            document.getElementById('group-image-modal-subtitle').textContent = `${cat.icon || '📁'} ${cat.name} > ${groupName}`;
+            document.getElementById('edit-group-image-file').value = '';
+
+            const existing = getCategoryGroupImage(cat, groupName);
+            document.getElementById('edit-group-image-url').value = (existing && existing.image) || '';
+            document.getElementById('edit-group-image-caption').value = (existing && existing.caption) || '';
+            setGroupModalImagePreview((existing && existing.image) || '');
+
+            document.getElementById('group-image-modal').classList.remove('hidden');
+        }
+
+        function closeGroupImageModal() {
+            document.getElementById('group-image-modal').classList.add('hidden');
+        }
+
+        function saveGroupImageForm(e) {
+            e.preventDefault();
+            const catId = document.getElementById('edit-group-img-cat-id').value;
+            const groupName = document.getElementById('edit-group-img-name').value;
+            const image = document.getElementById('edit-group-image-url').value.trim();
+            const caption = document.getElementById('edit-group-image-caption').value.trim();
+
+            const cat = catalog.find(c => c.id === catId);
+            if (!cat || !groupName) return;
+
+            if (!cat.groupImages || typeof cat.groupImages !== 'object') {
+                cat.groupImages = {};
+            }
+
+            if (image) {
+                cat.groupImages[groupName] = { image, caption };
+                showToast(`'${groupName}' 그룹 이미지가 저장되었습니다.`);
+            } else {
+                delete cat.groupImages[groupName];
+                showToast(`'${groupName}' 그룹 이미지가 삭제되었습니다.`);
+            }
+
+            saveCatalogToStorage();
+            closeGroupImageModal();
+            renderCurrentView();
+        }
+
         function openImageLightbox(src, title) {
             if (!src) return;
             const lightbox = document.getElementById('image-lightbox');
@@ -3734,41 +4004,13 @@
                 showToast('공유 열람 모드에서는 수정할 수 없습니다. 상단의 [내 데이터에 덮어쓰기]를 먼저 눌러주세요.');
                 return;
             }
-            const val = Math.max(0, Number(newValue) || 0);
+            const val = Math.max(0, parseInt(newValue, 10) || 0);
             if (val === 0) {
                 delete myProgress[itemId];
             } else {
                 myProgress[itemId] = val;
             }
             saveProgressToStorage();
-            renderCurrentView();
-        }
-
-        function setGanasadaiThoughtStep(itemId, type, checked) {
-            if (isSharedMode) {
-                showToast('공유 열람 모드에서는 수정할 수 없습니다. 상단의 [내 데이터에 덮어쓰기]를 먼저 눌러주세요.');
-                return;
-            }
-            const cur = Math.max(0, Math.min(2, parseInt(myProgress[itemId], 10) || 0));
-            let nextVal = cur;
-            if (type === 'min') {
-                nextVal = checked ? Math.max(1, cur) : 0;
-            } else if (type === 'max') {
-                nextVal = checked ? 2 : (cur >= 1 ? 1 : 0);
-            }
-            setItemProgress(itemId, nextVal);
-        }
-
-        function moveItemInCategory(catId, itemId, delta) {
-            const cat = catalog.find(c => c.id === catId);
-            if (!cat || !Array.isArray(cat.items)) return;
-            const idx = cat.items.findIndex(i => i.id === itemId);
-            if (idx < 0) return;
-            const targetIdx = idx + delta;
-            if (targetIdx < 0 || targetIdx >= cat.items.length) return;
-            const [moved] = cat.items.splice(idx, 1);
-            cat.items.splice(targetIdx, 0, moved);
-            saveCatalogToStorage();
             renderCurrentView();
         }
 
@@ -4462,8 +4704,8 @@
 
                 document.getElementById('edit-acc-base-effect').value = (existingItem && existingItem.accBaseEffect) || '';
                 document.getElementById('edit-acc-stats').value = (existingItem && existingItem.accStats) || '';
-                document.getElementById('edit-acc-synthesis-max').value = (existingItem && existingItem.accSynthesisMax) || '';
                 document.getElementById('edit-acc-obtain-method').value = (existingItem && existingItem.accObtainMethod) || '';
+                renderAccessorySynthesisInputs(getAccessorySynthesisList(existingItem));
             } else if (isMhMode) {
                 normalWrapper.classList.add('hidden');
                 treeSection.classList.add('hidden');
@@ -4809,8 +5051,18 @@
                 newItemObj.isAccessory = true;
                 newItemObj.accBaseEffect = document.getElementById('edit-acc-base-effect').value.trim();
                 newItemObj.accStats = document.getElementById('edit-acc-stats').value.trim();
-                newItemObj.accSynthesisMax = document.getElementById('edit-acc-synthesis-max').value.trim();
                 newItemObj.accObtainMethod = document.getElementById('edit-acc-obtain-method').value.trim();
+                const synRows = document.querySelectorAll('#edit-acc-synthesis-list-container .acc-syn-row');
+                const synList = [];
+                synRows.forEach(row => {
+                    const label = (row.querySelector('.acc-syn-label').value || '').trim();
+                    const effect = (row.querySelector('.acc-syn-effect').value || '').trim();
+                    if (label || effect) {
+                        synList.push({ label, effect: effect || label });
+                    }
+                });
+                newItemObj.accSynthesisList = synList;
+                newItemObj.accSynthesisMax = synList.map(s => s.label ? `[${s.label}] ${s.effect}` : s.effect).join(' / ');
             } else if (isMhMode) {
                 newItemObj.isMonsterHeart = true;
                 newItemObj.heartCost = Math.max(0, parseInt(document.getElementById('edit-mh-heart-cost').value, 10) || 0);
@@ -4994,13 +5246,6 @@
         window.addEventListener('hashchange', () => {
             parseShareHashFromUrl();
             renderCurrentView();
-        });
-
-        window.addEventListener('pageshow', (event) => {
-            if (event.persisted) {
-                loadInitialState();
-                renderCurrentView();
-            }
         });
 
         window.addEventListener('DOMContentLoaded', () => {
