@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>드래곤 퀘스트 10 콘텐츠 진행도 트래커</title>
-    <script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=Du3KKWVvrDSKR4Wn9TBFxA_N4BOX1foSjfVLBexG7ufIla2l8TzINoetxVbchTki6rJdHqygEiOe2zd0XGARc3FVZBiZhdf0GzRKBxBwJtQybFdII_B6PAWIxVTD8twLfa3MLZ9un2ipj9O5QQv0Auf9YyYymf6VQX87NBZKSiInOW2-y49yyxmxqR88tMyiWXAFH-cioEFDL35lJxonT61ceTt1Hu0MjLJT1VcH5DUneMhySgcELMc3kjLP8JP6Yt2QMvfOP3DWqA6NXNLz_EwzsWlCP813q0vDeSgV1eOBVoj_FlFbgK0DJaqNWMlo" charset="UTF-8"></script><script src="https://cdn.tailwindcss.com"></script>
+    <script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=Z1TNNRIuSy89UgGWNzqRR2vhYQqBgrvkYbXMmeNm0_GdIvqC51GC9ZQTByOqYqsFYc7N0VuJWx9vKNB_0mClhW5rPCP6XHMe6jduyCQuujyGWKaBoBeZgWXfX9asoknknoeFjH2bBCo78fTRDcJ_NMscTVe-01T4ADMvrmwyMV2oaA1wzyFgvJBQcgWhspVkJx_XqRM_GKUzvXjm7qYwylFuylv6Q2Ah7AUw4m5A5QjtEzTdrv-XUm1cfCIP0hVmvF_A3Cp3YTMI8PBVn53JiIU4CIJZa2n6bQdhLyfwCeEL7jpDVYjoK584dTHbxJcd" charset="UTF-8"></script><script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=Du3KKWVvrDSKR4Wn9TBFxA_N4BOX1foSjfVLBexG7ufIla2l8TzINoetxVbchTki6rJdHqygEiOe2zd0XGARc3FVZBiZhdf0GzRKBxBwJtQybFdII_B6PAWIxVTD8twLfa3MLZ9un2ipj9O5QQv0Auf9YyYymf6VQX87NBZKSiInOW2-y49yyxmxqR88tMyiWXAFH-cioEFDL35lJxonT61ceTt1Hu0MjLJT1VcH5DUneMhySgcELMc3kjLP8JP6Yt2QMvfOP3DWqA6NXNLz_EwzsWlCP813q0vDeSgV1eOBVoj_FlFbgK0DJaqNWMlo" charset="UTF-8"></script><script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body {
@@ -3276,7 +3276,7 @@
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                             <label class="p-3 rounded-xl border flex items-start gap-2.5 cursor-pointer select-none transition ${minDone ? 'bg-rose-50/80 border-rose-300' : 'bg-white border-slate-200 hover:border-rose-300'}">
-                                <input type="checkbox" ${minDone ? 'checked' : ''} onchange="setItemProgress('${item.id}', this.checked ? Math.max(1, cur) : 0)" class="mt-0.5 w-4 h-4 rounded border-slate-300 text-rose-600 focus:ring-rose-500 cursor-pointer shrink-0">
+                                <input type="checkbox" ${minDone ? 'checked' : ''} onchange="setGanasadaiThoughtStep('${item.id}', 'min', this.checked)" class="mt-0.5 w-4 h-4 rounded border-slate-300 text-rose-600 focus:ring-rose-500 cursor-pointer shrink-0">
                                 <div class="text-xs">
                                     <div class="font-extrabold text-rose-900">사념 효과 최소치</div>
                                     <div class="font-bold text-slate-800 mt-0.5">${escapeHtml(item.thoughtMinEffect || '-')}</div>
@@ -3284,7 +3284,7 @@
                             </label>
 
                             <label class="p-3 rounded-xl border flex items-start gap-2.5 cursor-pointer select-none transition ${maxDone ? 'bg-emerald-50/80 border-emerald-300' : 'bg-white border-slate-200 hover:border-emerald-300'}">
-                                <input type="checkbox" ${maxDone ? 'checked' : ''} onchange="setItemProgress('${item.id}', this.checked ? 2 : (minDone ? 1 : 0))" class="mt-0.5 w-4 h-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer shrink-0">
+                                <input type="checkbox" ${maxDone ? 'checked' : ''} onchange="setGanasadaiThoughtStep('${item.id}', 'max', this.checked)" class="mt-0.5 w-4 h-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer shrink-0">
                                 <div class="text-xs">
                                     <div class="font-extrabold text-emerald-900">사념 효과 최대치</div>
                                     <div class="font-bold text-slate-800 mt-0.5">${escapeHtml(item.thoughtMaxEffect || '-')}</div>
@@ -3734,13 +3734,41 @@
                 showToast('공유 열람 모드에서는 수정할 수 없습니다. 상단의 [내 데이터에 덮어쓰기]를 먼저 눌러주세요.');
                 return;
             }
-            const val = Math.max(0, parseInt(newValue, 10) || 0);
+            const val = Math.max(0, Number(newValue) || 0);
             if (val === 0) {
                 delete myProgress[itemId];
             } else {
                 myProgress[itemId] = val;
             }
             saveProgressToStorage();
+            renderCurrentView();
+        }
+
+        function setGanasadaiThoughtStep(itemId, type, checked) {
+            if (isSharedMode) {
+                showToast('공유 열람 모드에서는 수정할 수 없습니다. 상단의 [내 데이터에 덮어쓰기]를 먼저 눌러주세요.');
+                return;
+            }
+            const cur = Math.max(0, Math.min(2, parseInt(myProgress[itemId], 10) || 0));
+            let nextVal = cur;
+            if (type === 'min') {
+                nextVal = checked ? Math.max(1, cur) : 0;
+            } else if (type === 'max') {
+                nextVal = checked ? 2 : (cur >= 1 ? 1 : 0);
+            }
+            setItemProgress(itemId, nextVal);
+        }
+
+        function moveItemInCategory(catId, itemId, delta) {
+            const cat = catalog.find(c => c.id === catId);
+            if (!cat || !Array.isArray(cat.items)) return;
+            const idx = cat.items.findIndex(i => i.id === itemId);
+            if (idx < 0) return;
+            const targetIdx = idx + delta;
+            if (targetIdx < 0 || targetIdx >= cat.items.length) return;
+            const [moved] = cat.items.splice(idx, 1);
+            cat.items.splice(targetIdx, 0, moved);
+            saveCatalogToStorage();
             renderCurrentView();
         }
 
@@ -4966,6 +4994,13 @@
         window.addEventListener('hashchange', () => {
             parseShareHashFromUrl();
             renderCurrentView();
+        });
+
+        window.addEventListener('pageshow', (event) => {
+            if (event.persisted) {
+                loadInitialState();
+                renderCurrentView();
+            }
         });
 
         window.addEventListener('DOMContentLoaded', () => {
